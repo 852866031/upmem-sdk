@@ -13,6 +13,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <strings.h>
+#include <dpu_log_utils.h>
 #include "dpu_properties.h"
 #include "dpu_profile_properties.h"
 
