@@ -315,6 +315,7 @@ dpu_sysfs_get_available_rank(const char *rank_path, struct dpu_rank_fs *rank_fs)
         } else {
             LOG_FN(DEBUG, "flag2-6");
             int res = dpu_sysfs_try_to_allocate_rank(dev_rank_path, rank_fs);
+            LOG_FN(DEBUG, "res: %d", res);
             if (!res) {
                 LOG_FN(DEBUG, "flag2-7");
                 strcpy(rank_fs->rank_path, dev_rank_path);
