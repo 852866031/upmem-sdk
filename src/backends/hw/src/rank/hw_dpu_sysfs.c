@@ -287,31 +287,36 @@ dpu_sysfs_get_available_rank(const char *rank_path, struct dpu_rank_fs *rank_fs)
 {
     struct udev_list_entry *dev_rank_list_entry;
     int eacces_count = 0;
-
+    LOG_FN(DEBUG, "flag2-1");
     init_udev_enumerator(rank_fs->udev.enumerate, rank_fs->udev.udev, NULL, "dpu_rank", NULL, rank_fs->udev.devices, end);
 
     udev_list_entry_foreach(dev_rank_list_entry, rank_fs->udev.devices)
     {
         const char *path_rank, *dev_rank_path;
-
+        LOG_FN(DEBUG, "flag2-2");
         path_rank = udev_list_entry_get_name(dev_rank_list_entry);
         rank_fs->udev.dev = udev_device_new_from_syspath(rank_fs->udev.udev, path_rank);
         dev_rank_path = udev_device_get_devnode(rank_fs->udev.dev);
-
         if (strlen(rank_path)) {
+            LOG_FN(DEBUG, "flag2-3");
             if (!strcmp(dev_rank_path, rank_path)) {
+                LOG_FN(DEBUG, "rank_path: %s; dev_rank_path: %s", rank_path, dev_rank_path);
                 if (!dpu_sysfs_try_to_allocate_rank(dev_rank_path, rank_fs)) {
+                    LOG_FN(DEBUG, "flag2-4");
                     strcpy(rank_fs->rank_path, dev_rank_path);
                     return 0;
                 } else {
+                    LOG_FN(DEBUG, "flag2-5");
                     LOG_FN(WARNING, "Allocation of requested %s rank failed", rank_path);
                     udev_device_unref(rank_fs->udev.dev);
                     break;
                 }
             }
         } else {
+            LOG_FN(DEBUG, "flag2-6");
             int res = dpu_sysfs_try_to_allocate_rank(dev_rank_path, rank_fs);
             if (!res) {
+                LOG_FN(DEBUG, "flag2-7");
                 strcpy(rank_fs->rank_path, dev_rank_path);
                 return 0;
             }
@@ -322,6 +327,7 @@ dpu_sysfs_get_available_rank(const char *rank_path, struct dpu_rank_fs *rank_fs)
 
         udev_device_unref(rank_fs->udev.dev);
     }
+    LOG_FN(DEBUG, "flag2-8");
     udev_enumerate_unref(rank_fs->udev.enumerate);
     udev_unref(rank_fs->udev.udev);
 
