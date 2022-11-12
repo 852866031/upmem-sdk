@@ -881,6 +881,7 @@ hw_fill_description_from_profile(dpu_properties_t properties, dpu_description_t 
         free(region_mode_input);
     } else {
         LOG_FN(DEBUG, "Region mode not specified, switching to default (%s)", (capabilities_mode & CAP_PERF) ? "perf" : "safe");
+        LOG_FN(DEBUG, "This is a test");
         parameters->mode = (capabilities_mode & CAP_PERF) ? (uint8_t)DPU_REGION_MODE_PERF : (uint8_t)DPU_REGION_MODE_SAFE;
     }
 
