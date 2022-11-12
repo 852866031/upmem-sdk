@@ -411,7 +411,7 @@ hw_allocate(struct dpu_rank_t *rank, dpu_description_t description)
     hw_dpu_rank_context_t rank_context;
     int ret;
     uint8_t nr_cis;
-
+    LOG_RANK(DEBUG, "flag1");
     /* 1/ Make sure SDK is compatible with the kernel module */
     static bool compatibility_checked = false;
     if ((params->bypass_module_compatibility == false) && (compatibility_checked == false)) {
@@ -421,7 +421,7 @@ hw_allocate(struct dpu_rank_t *rank, dpu_description_t description)
         }
         compatibility_checked = true;
     }
-
+    LOG_RANK(DEBUG, "flag2");
     /* 2/ Find an available rank whose mode is compatible with the one asked
      * by the user.
      * TODO: Maybe user wants to have a specific dpu_chip_id passed as argument,
@@ -436,7 +436,7 @@ hw_allocate(struct dpu_rank_t *rank, dpu_description_t description)
         status = DPU_RANK_SYSTEM_ERROR;
         goto end;
     }
-
+    LOG_RANK(DEBUG, "flag3");
     rank->rank_id = (rank->rank_id & ~DPU_TARGET_MASK) | dpu_sysfs_get_rank_id(&params->rank_fs);
     rank->numa_node = dpu_sysfs_get_numa_node(&params->rank_fs);
     params->channel_id = dpu_sysfs_get_channel_id(&params->rank_fs);
@@ -446,11 +446,11 @@ hw_allocate(struct dpu_rank_t *rank, dpu_description_t description)
         status = DPU_RANK_SYSTEM_ERROR;
         goto free_physical_rank;
     }
-
+    LOG_RANK(DEBUG, "flag4");
     rank->_internals = rank_context;
 
     params->dpu_chip_id = dpu_sysfs_get_dpu_chip_id(&params->rank_fs);
-
+    LOG_RANK(DEBUG, "flag5");
     if (params->dpu_chip_id != description->hw.signature.chip_id) {
         LOG_RANK(
             WARNING, rank, "Unexpected chip id %u (description is %u)", params->dpu_chip_id, description->hw.signature.chip_id);
