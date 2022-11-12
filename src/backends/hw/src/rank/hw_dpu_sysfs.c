@@ -182,15 +182,15 @@ dpu_sysfs_try_to_allocate_rank(const char *dev_rank_path, struct dpu_rank_fs *ra
 {
     struct udev_list_entry *dev_dax_list_entry;
     uint64_t capabilities;
-    LOG_FN(DEBUG, "flag2-6-1");
+    
     /* Whatever the mode, we keep an fd to dpu_rank so that
      * we have infos about how/who uses the rank
      */
     rank_fs->fd_rank = open(dev_rank_path, O_RDWR);
     if (rank_fs->fd_rank < 0)
         return -errno;
-        
-    LOG_FN(DEBUG, "flag2-6-2");
+    
+    LOG_FN(DEBUG, "flag2-6-1");
     /* udev_device_get_parent does not take a reference as stated in header */
     rank_fs->udev_parent.dev = udev_device_get_parent(rank_fs->udev.dev);
 
@@ -198,6 +198,7 @@ dpu_sysfs_try_to_allocate_rank(const char *dev_rank_path, struct dpu_rank_fs *ra
     capabilities = dpu_sysfs_get_capabilities(rank_fs);
 
     if (capabilities & CAP_PERF) {
+        LOG_FN(DEBUG, "flag2-6-2");
         /* There's only one dax device associated to the region,
          * but we use the enumerate match facility to find it.
          */
@@ -208,7 +209,7 @@ dpu_sysfs_try_to_allocate_rank(const char *dev_rank_path, struct dpu_rank_fs *ra
             rank_fs->udev_parent.dev,
             rank_fs->udev_dax.devices,
             err);
-
+        LOG_FN(DEBUG, "flag2-6-3");
         udev_list_entry_foreach(dev_dax_list_entry, rank_fs->udev_dax.devices)
         {
             const char *path_dax, *dev_dax_path;
@@ -224,7 +225,7 @@ dpu_sysfs_try_to_allocate_rank(const char *dev_rank_path, struct dpu_rank_fs *ra
             LOG_FN(WARNING, "Error (%d: '%s') opening dax device '%s'", errno, strerror(errno), dev_dax_path);
             udev_device_unref(rank_fs->udev_dax.dev);
         }
-
+        LOG_FN(DEBUG, "flag2-6-4");
         udev_enumerate_unref(rank_fs->udev_dax.enumerate);
         udev_unref(rank_fs->udev_dax.udev);
     } else
