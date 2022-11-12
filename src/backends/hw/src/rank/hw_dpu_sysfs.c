@@ -182,14 +182,15 @@ dpu_sysfs_try_to_allocate_rank(const char *dev_rank_path, struct dpu_rank_fs *ra
 {
     struct udev_list_entry *dev_dax_list_entry;
     uint64_t capabilities;
-
+    LOG_FN(DEBUG, "flag2-6-1");
     /* Whatever the mode, we keep an fd to dpu_rank so that
      * we have infos about how/who uses the rank
      */
     rank_fs->fd_rank = open(dev_rank_path, O_RDWR);
     if (rank_fs->fd_rank < 0)
         return -errno;
-
+        
+    LOG_FN(DEBUG, "flag2-6-2");
     /* udev_device_get_parent does not take a reference as stated in header */
     rank_fs->udev_parent.dev = udev_device_get_parent(rank_fs->udev.dev);
 
