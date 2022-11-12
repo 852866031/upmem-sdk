@@ -862,7 +862,7 @@ hw_fill_description_from_profile(dpu_properties_t properties, dpu_description_t 
         strcpy(parameters->rank_fs.rank_path, rank_path);
         free(rank_path);
     }
-
+    LOG_FN(DEBUG, "region_mode_input: %s", region_mode_input);
     if (region_mode_input) {
         if (!strcmp(region_mode_input, "safe"))
             parameters->mode = (uint8_t)DPU_REGION_MODE_SAFE;
