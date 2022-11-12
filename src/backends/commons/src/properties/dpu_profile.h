@@ -88,11 +88,9 @@ fetch_boolean_property(dpu_properties_t properties, const char *name, bool *valu
 static inline bool
 fetch_string_property(dpu_properties_t properties, const char *name, char **value, const char *default_value)
 {
-    printf("fetching property: %s", name);
     const char *value_string;
 
     if ((value_string = dpu_properties_get(properties, name)) == DPU_PROPERTIES_NO_SUCH_PROPERTY) {
-        printf("Property: %s does not exist", name);
         value_string = default_value;
     }
 

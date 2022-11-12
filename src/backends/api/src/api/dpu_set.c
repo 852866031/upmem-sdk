@@ -278,7 +278,7 @@ dpu_alloc(uint32_t nr_dpus, const char *profile, struct dpu_set_t *dpu_set)
     }
 
     {
-        dpu_properties_t properties = dpu_properties_load_from_profile(profile);
+        dpu_properties_t properties = dpu_properties_load_from_profile(Hi );
         if (properties == DPU_PROPERTIES_INVALID) {
             return DPU_ERR_INVALID_PROFILE;
         }
