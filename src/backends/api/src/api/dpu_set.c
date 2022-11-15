@@ -301,6 +301,7 @@ dpu_alloc(uint32_t nr_dpus, const char *profile, struct dpu_set_t *dpu_set)
     dpu_error_t status = DPU_OK;
 
     do {
+        printf("DPU_ALLOC: flag1\n")
         // allocating space for new rank
         if (current_nr_of_ranks == capacity) {
             capacity = 2 * capacity + 2;
@@ -312,11 +313,11 @@ dpu_alloc(uint32_t nr_dpus, const char *profile, struct dpu_set_t *dpu_set)
             }
             current_ranks = current_ranks_tmp;
         }
-
+        printf("DPU_ALLOC: flag2\n")
         struct dpu_rank_t **next_rank = current_ranks + current_nr_of_ranks;
         // We try to allocate a new rank
         status = dpu_get_rank_of_type(profile, next_rank);
-
+        printf("DPU_ALLOC: flag3\n")
         // case : it failed but we simply allocate all
         if (status == DPU_ERR_ALLOCATION && current_nr_of_ranks != 0 && (nr_dpus == DPU_ALLOCATE_ALL || dispatch_on_all_ranks)) {
             // in case not enough dpus
@@ -336,6 +337,7 @@ dpu_alloc(uint32_t nr_dpus, const char *profile, struct dpu_set_t *dpu_set)
             }
             current_nr_of_dpus += get_nr_of_dpus_in_rank(*next_rank);
         }
+        printf("DPU_ALLOC: flag4\n")
         // we either reached sufficient dpus or failed to allocate
     } while ((current_nr_of_ranks < nr_dpus) && (dispatch_on_all_ranks || current_nr_of_dpus < nr_dpus)
         && (status != DPU_ERR_ALLOCATION));
