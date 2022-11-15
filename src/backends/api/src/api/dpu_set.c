@@ -301,6 +301,7 @@ dpu_alloc(uint32_t nr_dpus, const char *profile, struct dpu_set_t *dpu_set)
     dpu_error_t status = DPU_OK;
 
     do {
+        LOG_FN(WARNING, "DPU_ALLOC: flag1\n");
         printf("DPU_ALLOC: flag1\n");
         // allocating space for new rank
         if (current_nr_of_ranks == capacity) {
