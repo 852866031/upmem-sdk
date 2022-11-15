@@ -332,16 +332,17 @@ dpu_alloc(uint32_t nr_dpus, const char *profile, struct dpu_set_t *dpu_set)
             goto error_free_ranks;
             // case : otherwise it passed
         } else {
+            printf("DPU_ALLOC: flag7\n");
             current_nr_of_ranks++;
             if (!(*next_rank)->description->configuration.disable_reset_on_alloc) {
                 if ((status = dpu_reset_rank(*next_rank)) != DPU_OK) {
-                    printf("DPU_ALLOC: flag7\n");
+                    printf("DPU_ALLOC: flag8\n");
                     goto error_free_ranks;
                 }
             }
             current_nr_of_dpus += get_nr_of_dpus_in_rank(*next_rank);
         }
-        printf("DPU_ALLOC: flag5\n");
+        printf("DPU_ALLOC: flag10\n");
         // we either reached sufficient dpus or failed to allocate
     } while ((current_nr_of_ranks < nr_dpus) && (dispatch_on_all_ranks || current_nr_of_dpus < nr_dpus)
         && (status != DPU_ERR_ALLOCATION));
