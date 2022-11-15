@@ -425,7 +425,7 @@ __API_SYMBOL__ dpu_error_t
 dpu_free_rank(struct dpu_rank_t *rank)
 {
     LOG_RANK(DEBUG, rank, "");
-
+    printf("\nENTER FREE RANK\n\n")
     dpu_lock_rank(rank);
 
     uint8_t nr_dpus = rank->description->hw.topology.nr_of_control_interfaces
