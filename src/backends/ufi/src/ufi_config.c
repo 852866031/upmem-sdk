@@ -979,7 +979,7 @@ end:
 __API_SYMBOL__ dpu_error_t ci_reset_rank(struct dpu_rank_t *rank)
 {
 	dpu_error_t status;
-	printf("FFFFFFFFFFFF: 0 HERE IS THE STATUS %d\n", status);
+	//printf("FFFFFFFFFFFF: 0 HERE IS THE STATUS %d\n", status);
 	dpu_description_t desc = rank->description;
 	struct dpu_bit_config *bit_config = &desc->hw.dpu.pcb_transformation;
 
