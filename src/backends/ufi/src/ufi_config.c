@@ -1013,8 +1013,9 @@ __API_SYMBOL__ dpu_error_t ci_reset_rank(struct dpu_rank_t *rank)
 	FF(dpu_ci_shuffling_box_config(rank, bit_config));
 	printf("FFFFFFFFFFFF: 3 PASSED 2 TIMES SHUFFLING AND DPU_SOFT_RESET \n");
 	FF(dpu_identity(rank));
-	FF(dpu_thermal_config(rank, desc->hw.timings.std_temperature));
 	printf("FFFFFFFFFFFF: 4 PASSED IDENTITY THERNAM CAROUSSEL  \n");
+
+	FF(dpu_thermal_config(rank, desc->hw.timings.std_temperature));
 
 	FF(dpu_carousel_config(rank, &desc->hw.timings.carousel));
 	FF(dpu_iram_repair_config(rank));
