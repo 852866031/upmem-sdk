@@ -1016,11 +1016,11 @@ __API_SYMBOL__ dpu_error_t ci_reset_rank(struct dpu_rank_t *rank)
 	FF(dpu_thermal_config(rank, desc->hw.timings.std_temperature));
 
 	FF(dpu_carousel_config(rank, &desc->hw.timings.carousel));
-
+	printf("FFFFFFFFFFFF: 4 PASSED IDENTITY THERNAM CAROUSSEL  \n");
 	FF(dpu_iram_repair_config(rank));
 	save_enabled_dpus(rank, all_dpus_are_enabled_save, enabled_dpus_save,
 			  true);
-	printf("FFFFFFFFFFFF: 4 PASSED IDENTITY THERNAM CAROUSSEL  \n");
+	
 	FF(dpu_wram_repair_config(rank));
 	save_enabled_dpus(rank, all_dpus_are_enabled_save, enabled_dpus_save,
 			  true);
