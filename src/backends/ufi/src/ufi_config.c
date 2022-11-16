@@ -979,6 +979,7 @@ end:
 __API_SYMBOL__ dpu_error_t ci_reset_rank(struct dpu_rank_t *rank)
 {
 	dpu_error_t status;
+	printf("FFFFFFFFFFFF: 0 HERE IS THE STATUS %d\n", status);
 	dpu_description_t desc = rank->description;
 	struct dpu_bit_config *bit_config = &desc->hw.dpu.pcb_transformation;
 
@@ -991,24 +992,26 @@ __API_SYMBOL__ dpu_error_t ci_reset_rank(struct dpu_rank_t *rank)
 
 	bool all_dpus_are_enabled_save[DPU_MAX_NR_CIS];
 	dpu_selected_mask_t enabled_dpus_save[DPU_MAX_NR_CIS];
-
+	printf("FFFFFFFFFFFF: 1 PREWAVEGEN FETCH \n");
 	fetch_dma_and_wavegen_configs(desc->hw.timings.fck_frequency_in_mhz,
 				      desc->hw.timings.clock_division,
 				      REFRESH_MODE_VALUE,
 				      !desc->configuration.ila_control_refresh,
 				      &std_dma_config, &wavegen_config);
-
+	printf("FFFFFFFFFFFF: 1 POSTWAVEGEN FETCH \n");
 	/* All DPUs are enabled during the reset */
 	save_enabled_dpus(rank, all_dpus_are_enabled_save, enabled_dpus_save,
 			  false);
-
+	printf("FFFFFFFFFFFF: 1 BEFORE STARTING \n");
 	FF(dpu_byte_order(rank));
 	FF(dpu_soft_reset(rank, DPU_CLOCK_DIV8));
 	FF(dpu_bit_config(rank, bit_config));
+	printf("FFFFFFFFFFFF: 2 PASSED BYTE ORDER DPU_SOFT_RESET BIT_CONFIG \n");
 	FF(dpu_ci_shuffling_box_config(rank, bit_config));
 	FF(dpu_soft_reset(rank, from_division_factor_to_dpu_enum(
 					desc->hw.timings.clock_division)));
 	FF(dpu_ci_shuffling_box_config(rank, bit_config));
+	printf("FFFFFFFFFFFF: 3 PASSED 2 TIMES SHUFFLING AND DPU_SOFT_RESET \n");
 	FF(dpu_identity(rank));
 	FF(dpu_thermal_config(rank, desc->hw.timings.std_temperature));
 
@@ -1017,7 +1020,7 @@ __API_SYMBOL__ dpu_error_t ci_reset_rank(struct dpu_rank_t *rank)
 	FF(dpu_iram_repair_config(rank));
 	save_enabled_dpus(rank, all_dpus_are_enabled_save, enabled_dpus_save,
 			  true);
-
+	printf("FFFFFFFFFFFF: 4 PASSED IDENTITY THERNAM CAROUSSEL  \n");
 	FF(dpu_wram_repair_config(rank));
 	save_enabled_dpus(rank, all_dpus_are_enabled_save, enabled_dpus_save,
 			  true);
@@ -1025,17 +1028,18 @@ __API_SYMBOL__ dpu_error_t ci_reset_rank(struct dpu_rank_t *rank)
 	FF(dpu_dma_config(rank, dma_config));
 	FF(dpu_dma_shuffling_box_config(rank, bit_config));
 	FF(dpu_wavegen_config(rank, &wavegen_config));
-
+	printf("FFFFFFFFFFFF: 5 PASSED REPAIR WRAM SHFUFFLING AND DMA AND WAVEGEN \n");
 	FF(dpu_clear_debug(rank));
 	FF(dpu_clear_run_bits(rank));
 
 	FF(dpu_set_pc_mode(rank, DPU_PC_MODE_16));
 	FF(dpu_set_stack_direction(rank, true));
 	FF(dpu_reset_internal_state(rank));
-
+	printf("FFFFFFFFFFFF: 6 OTHERS \n");
 	FF(dpu_switch_mux_for_rank(
 		rank, desc->configuration.api_must_switch_mram_mux));
 	FF(dpu_init_groups(rank, all_dpus_are_enabled_save, enabled_dpus_save));
+	printf("FFFFFFFFFFFF: 6 HERE IS THE STATUS %d\n", status);
 
 end:
 	return status;
