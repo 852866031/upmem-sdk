@@ -318,7 +318,7 @@ dpu_alloc(uint32_t nr_dpus, const char *profile, struct dpu_set_t *dpu_set)
         // We try to allocate a new rank
         status = dpu_get_rank_of_type(profile, next_rank);
         printf("DPU_ALLOC: flag3\n");
-        printf("DPU_ALLOC: current nr of ranks: %u\n", current_nr_of_dpus);
+        printf("DPU_ALLOC: current nr of ranks: %u\n", current_nr_of_ranks);
         printf("DPU_ALLOC: nr_dpus: %u\n", nr_dpus);
         // case : it failed but we simply allocate all
         if (status == DPU_ERR_ALLOCATION && current_nr_of_ranks != 0 && (nr_dpus == DPU_ALLOCATE_ALL || dispatch_on_all_ranks)) {
