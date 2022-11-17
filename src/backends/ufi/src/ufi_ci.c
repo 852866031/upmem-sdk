@@ -143,11 +143,12 @@ __API_SYMBOL__ u32 ci_exec_32bit_cmd(struct dpu_rank_t *rank, u64 *commands,
 	u8 nr_cis = GET_DESC_HW(rank)->topology.nr_of_control_interfaces;
 	u8 each_ci;
 	u32 status;
-
+	printf("CICICICICICICI: BEFORE EXEC COMMAND 32BITS\n");
 	if ((status = exec_cmd(rank, commands, false)) != DPU_OK) {
+		printf("CICICICICICICI: FAILED TO EXEC CMD WITH STATUS : %d\n", status);
 		return status;
 	}
-
+	printf("CICICICICICICI: DONE CI EXEC 32 BITS EXEC COMMAND 32BITS\n");
 	for (each_ci = 0; each_ci < nr_cis; ++each_ci) {
 		if (commands[each_ci] != CI_EMPTY) {
 			results[each_ci] = rank->data[each_ci];
