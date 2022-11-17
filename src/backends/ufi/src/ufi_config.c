@@ -270,15 +270,15 @@ static dpu_error_t dpu_identity(struct dpu_rank_t *rank)
 	dpu_error_t status;
 	dpu_slice_id_t slice_id;
 	uint32_t identity_result;
-	printf("IIIIIIIIIIIIIII: 1 ENTER DPU_IDENTITY");
+	printf("IIIIIIIIIIIIIII: 1 ENTER DPU_IDENTITY \n");
 	LOG_RANK(VERBOSE, rank, "");
 
 	FF(ufi_select_cis(rank, &mask));
-	printf("IIIIIIIIIIIIIII: 2 DONE UFI SELECT CIS");
+	printf("IIIIIIIIIIIIIII: 2 DONE UFI SELECT CIS \n");
 	FF(ufi_identity(rank, mask, identity_results));
-	printf("IIIIIIIIIIIIIII: 3 DONE UFI IDENTITY");
+	printf("IIIIIIIIIIIIIII: 3 DONE UFI IDENTITY \n");
 	identity_result = identity_results[__builtin_ctz(mask)];
-	printf("IIIIIIIIIIIIIII: 4 ENTER GOT IDENTITY");
+	printf("IIIIIIIIIIIIIII: 4 ENTER GOT IDENTITY \n");
 	for (slice_id = 0;
 	     slice_id < rank->description->hw.topology.nr_of_control_interfaces;
 	     ++slice_id) {
@@ -294,10 +294,10 @@ static dpu_error_t dpu_identity(struct dpu_rank_t *rank)
 			goto end;
 		}
 	}
-	printf("IIIIIIIIIIIIIII: 5 DONE FOR LOOP");
+	printf("IIIIIIIIIIIIIII: 5 DONE FOR LOOP \n");
 	if (identity_result != rank->description->hw.signature.chip_id) {
-		printf("IIIIIIIIIIIIIII: THE CHIP ID %d",rank->description->hw.signature.chip_id);
-		printf("IIIIIIIIIIIIIII: 5,5 HERE THE IDENTITY IS DIFFERENT FROM THE CHIP_ID");
+		printf("IIIIIIIIIIIIIII: THE CHIP ID 0x%08x THE IDENTITY 0x%08x\n",rank->description->hw.signature.chip_id, identity_result);
+		printf("IIIIIIIIIIIIIII: 5,5 HERE THE IDENTITY IS DIFFERENT FROM THE CHIP_ID\n");
 		LOG_RANK(
 			WARNING, rank,
 			"ERROR: invalid identity (expected: 0x%08x; found: 0x%08x)",
@@ -305,7 +305,7 @@ static dpu_error_t dpu_identity(struct dpu_rank_t *rank)
 			identity_result);
 		status = DPU_ERR_INTERNAL;
 	}
-	printf("IIIIIIIIIIIIIII: 6 DONE WITH IDENTITY RESULT");
+	printf("IIIIIIIIIIIIIII: 6 DONE WITH IDENTITY RESULT \n");
 end:
 	return status;
 }
