@@ -126,7 +126,6 @@ __attribute__((used)) u32 lldb_dummy_results[DPU_MAX_NR_CIS];
 __API_SYMBOL__ u32 ufi_identity(struct dpu_rank_t *rank, u8 ci_mask,
 				u32 *results)
 {
-	printf("DDDDDDDDDDDDDD : ENTER UFI IDENTITY \n");
 	u32 status;
 	u64 *cmds = GET_CMDS(rank);
 	u8 nr_cis = GET_DESC_HW(rank)->topology.nr_of_control_interfaces;
