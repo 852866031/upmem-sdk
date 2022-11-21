@@ -260,6 +260,7 @@ static dpu_error_t dpu_bit_config(struct dpu_rank_t *rank,
 		config->dpu2cpu);
 
 end:
+	printf("dpu_bit_config status: %d\n",status);
 	return status;
 }
 
