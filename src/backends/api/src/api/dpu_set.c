@@ -372,7 +372,7 @@ dpu_alloc(uint32_t nr_dpus, const char *profile, struct dpu_set_t *dpu_set)
         printf("DPU_ALLOC: error init_dpu_set, status: %d\n", status);
         goto error_free_ranks;
     }
-
+    printf("DPU_ALLOC: SUCCESS\n");
     return DPU_OK;
 
 error_free_ranks:
