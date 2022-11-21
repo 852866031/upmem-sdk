@@ -203,6 +203,7 @@ dpu_load_generic(struct dpu_set_t dpu_set,
             status = DPU_ERR_INTERNAL;
             goto free_runtime;
     }
+    printf("dpu_load_generic: out switch\n");
 
     if (program != NULL) {
         *program = runtime;
@@ -210,11 +211,14 @@ dpu_load_generic(struct dpu_set_t dpu_set,
     goto close_elf;
 
 free_runtime:
+    printf("dpu_load_generic end, enter free runtime\n");
     runtime->reference_count = 1;
     dpu_free_program(runtime);
 close_elf:
+    printf("dpu_load_generic end, enter dpu_elf_close\n");
     dpu_elf_close(elf_info);
 end:
+    printf("dpu_load_generic end, status: %d\n", status);
     return status;
 }
 
