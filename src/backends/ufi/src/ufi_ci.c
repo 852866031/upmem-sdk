@@ -505,7 +505,7 @@ static bool determine_if_commands_are_finished(struct dpu_rank_t *rank,
 			is_done[each_ci] = true;
 		}
 	}
-	printf("DDDDDDDDDDD: IN_PROGRESS SUCCEEDS " );
+	printf("DDDDDDDDDDD: IN_PROGRESS SUCCEEDS \n\n" );
 	return true;
 }
 
