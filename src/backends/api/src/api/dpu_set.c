@@ -339,6 +339,7 @@ dpu_alloc(uint32_t nr_dpus, const char *profile, struct dpu_set_t *dpu_set)
             if (!(*next_rank)->description->configuration.disable_reset_on_alloc) {
                 if ((status = dpu_reset_rank(*next_rank)) != DPU_OK) {
                     printf("DPU_ALLOC: flag8, status: %d\n", status);
+                    printf("DPU_ALLOC: flag8, status: %d\n", DPU_OK);
                     goto error_free_ranks;
                 }
             }
