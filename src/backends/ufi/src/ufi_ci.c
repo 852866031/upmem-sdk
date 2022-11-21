@@ -301,7 +301,7 @@ static u32 exec_cmd(struct dpu_rank_t *rank, u64 *commands,
 		in_progress = !determine_if_commands_are_finished(
 			rank, data, expected, result_masks, expected_color,
 			is_done);
-		printf("WE ARE IN THE DO WHILE LOOP (EXEC_CMD) PROGRESS : %d TIMEOUT %d \n", in_progress, timeout);
+		printf("WE ARE IN THE DO WHILE LOOP (EXEC_CMD) PROGRESS : %d TIMEOUT %d NB_RETRIES %d \n", in_progress, timeout,nr_retries);
 		timeout = (nr_retries--) == 0;
 	} while (in_progress && !timeout);
 
@@ -442,6 +442,8 @@ static bool determine_if_commands_are_finished(struct dpu_rank_t *rank,
 			if ((result & result_masks[each_ci]) !=
 				    expected[each_ci] &&
 			    (result & CI_NOP) != CI_NOP) {
+				printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE OF CI_NOP : cond 1 : %d ; cond 2 : %d", (result & result_masks[each_ci]) !=
+				    expected[each_ci],(result & CI_NOP) != CI_NOP );
 				return false;
 			}
 
@@ -453,10 +455,12 @@ static bool determine_if_commands_are_finished(struct dpu_rank_t *rank,
 
 			if (ci_color != 0) {
 				if (nb_bits_set <= 3) {
+					printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE COLORS != 0 AND NB BIT SET < 3 " );
 					return false;
 				}
 			} else {
 				if (nb_bits_set >= 5) {
+					printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE COLORS ==0 AND NB BIT SET > 5 " );
 					return false;
 				}
 			}
@@ -494,13 +498,14 @@ static bool determine_if_commands_are_finished(struct dpu_rank_t *rank,
 				       "Number of bits set (%u) is inconsistent."
 				       "Mark the result as not ready.",
 				       nb_bits_set);
+					printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE NB BITS SENT ARE INCONSISTENT " );
 				return false;
 			}
 
 			is_done[each_ci] = true;
 		}
 	}
-
+	printf("DDDDDDDDDDD: IN_PROGRESS SUCCEEDS " );
 	return true;
 }
 
