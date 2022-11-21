@@ -276,7 +276,7 @@ static u32 exec_cmd(struct dpu_rank_t *rank, u64 *commands,
 	u8 ci_mask;
 	u32 status;
 	bool in_progress, timeout;
-	u32 nr_retries = NB_RETRY_FOR_VALID_RESULT;
+	u32 nr_retries = NB_RETRY_FOR_VALID_RESULT *10;
 
 	if ((status = compute_masks(rank, commands, result_masks, expected,
 				    &ci_mask, add_select_mask, is_done)) !=
