@@ -173,15 +173,21 @@ init_dpu_set(struct dpu_rank_t **ranks, uint32_t nr_ranks, struct dpu_set_t *dpu
     dpu_set->list.nr_ranks = nr_ranks;
     dpu_set->list.ranks = ranks;
 
+    printf("init_dpu_set: checking dpu_thread_job_create\n");
     if ((status = dpu_thread_job_create(ranks, nr_ranks)) != DPU_OK) {
+        printf("init_dpu_set: dpu_thread_job_create error, status: %d\n", status);
         goto end;
     }
 
+    printf("init_dpu_set: checking set_allocator_register\n");
     if ((status = set_allocator_register(dpu_set)) != DPU_OK) {
+        printf("init_dpu_set: set_allocator_register error, status: %d\n", status);
         goto end;
     }
 
+    printf("init_dpu_set: checking polling_thread_create\n");
     if ((status = polling_thread_create()) != DPU_OK) {
+        printf("init_dpu_set: polling_thread_create error, status: %d\n", status);
         goto end;
     }
 
