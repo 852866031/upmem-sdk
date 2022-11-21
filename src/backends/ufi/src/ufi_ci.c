@@ -442,7 +442,7 @@ static bool determine_if_commands_are_finished(struct dpu_rank_t *rank,
 			if ((result & result_masks[each_ci]) !=
 				    expected[each_ci] &&
 			    (result & CI_NOP) != CI_NOP) {
-				printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE OF CI_NOP : cond 1 : %d ; cond 2 : %d", (result & result_masks[each_ci]) !=
+				printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE OF CI_NOP : cond 1 : %d ; cond 2 : %d\n", (result & result_masks[each_ci]) !=
 				    expected[each_ci],(result & CI_NOP) != CI_NOP );
 				return false;
 			}
@@ -455,12 +455,12 @@ static bool determine_if_commands_are_finished(struct dpu_rank_t *rank,
 
 			if (ci_color != 0) {
 				if (nb_bits_set <= 3) {
-					printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE COLORS != 0 AND NB BIT SET < 3 " );
+					printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE COLORS != 0 AND NB BIT SET < 3 \n" );
 					return false;
 				}
 			} else {
 				if (nb_bits_set >= 5) {
-					printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE COLORS ==0 AND NB BIT SET > 5 " );
+					printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE COLORS ==0 AND NB BIT SET > 5 \n" );
 					return false;
 				}
 			}
@@ -498,7 +498,7 @@ static bool determine_if_commands_are_finished(struct dpu_rank_t *rank,
 				       "Number of bits set (%u) is inconsistent."
 				       "Mark the result as not ready.",
 				       nb_bits_set);
-					printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE NB BITS SENT ARE INCONSISTENT " );
+					printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE NB BITS SENT ARE INCONSISTENT \n" );
 				return false;
 			}
 
