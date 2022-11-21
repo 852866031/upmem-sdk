@@ -349,6 +349,7 @@ dpu_alloc(uint32_t nr_dpus, const char *profile, struct dpu_set_t *dpu_set)
         // we either reached sufficient dpus or failed to allocate
     } while ((current_nr_of_ranks < nr_dpus) && (dispatch_on_all_ranks || current_nr_of_dpus < nr_dpus)
         && (status != DPU_ERR_ALLOCATION));
+    printf("DPU_ALLOC: out do while\n");
 
     if (nr_dpus == DPU_ALLOCATE_ALL) {
         nr_dpus = current_nr_of_dpus;
