@@ -439,9 +439,7 @@ static bool determine_if_commands_are_finished(struct dpu_rank_t *rank,
 			u64 result = data[each_ci];
 
 			/* The second case can happen when the debugger has restored the result */
-			if ((result & result_masks[each_ci]) !=
-				    expected[each_ci] &&
-			    (result & CI_NOP) != CI_NOP) {
+			if ((result & result_masks[each_ci]) != expected[each_ci] && (result & CI_NOP) != CI_NOP) {
 				printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE OF CI_NOP : cond 1 : %d ; cond 2 : %d\n", (result & result_masks[each_ci]) !=
 				    expected[each_ci],(result & CI_NOP) != CI_NOP );
 				return false;
