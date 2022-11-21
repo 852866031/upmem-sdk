@@ -344,7 +344,6 @@ dpu_rank_handler_free_rank(struct dpu_rank_t *rank, dpu_rank_handler_context_t h
     dpu_lock_rank(rank);
 
     dpu_rank_list_remove(rank);
-
     handler_context->handler->free(rank);
     dpu_release_rank_id(rank->rank_handler_allocator_id);
     dpu_free_description(rank->description);

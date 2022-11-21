@@ -115,6 +115,7 @@ __API_SYMBOL__ u32 ufi_bit_config(struct dpu_rank_t *rank, u8 ci_mask,
 	}
 
 end:
+	printf("ufi_bit_config status: %d",status);
 	return status;
 }
 
