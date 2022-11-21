@@ -148,8 +148,10 @@ dpu_load_generic(struct dpu_set_t dpu_set,
     dpu_elf_file_t elf_info;
     struct dpu_program_t *runtime;
 
+    printf("dpu_load_generic: called\n");
     if ((runtime = malloc(sizeof(*runtime))) == NULL) {
         status = DPU_ERR_SYSTEM;
+        printf("dpu_load_generic: error malloc, status: %d\n", status);
         goto end;
     }
     dpu_init_program_ref(runtime);
@@ -158,6 +160,7 @@ dpu_load_generic(struct dpu_set_t dpu_set,
 
     if ((status = load_elf_program(&elf_info, path, buffer, buffer_size, runtime, description->hw.memories.mram_size))
         != DPU_OK) {
+        printf("dpu_load_generic: error load_elf_program, status: %d\n", status);
         free(runtime);
         goto end;
     }
@@ -170,6 +173,7 @@ dpu_load_generic(struct dpu_set_t dpu_set,
 
     switch (dpu_set.kind) {
         case DPU_SET_RANKS: {
+            printf("dpu_load_generic: switching, dpu_set.kind: DPU_SET_RANKS\n");
             uint32_t nr_jobs_per_rank;
             struct dpu_thread_job_sync sync;
             DPU_THREAD_JOB_GET_JOBS(
@@ -187,6 +191,7 @@ dpu_load_generic(struct dpu_set_t dpu_set,
             status = dpu_thread_job_do_jobs(dpu_set.list.ranks, dpu_set.list.nr_ranks, nr_jobs_per_rank, jobs, true, &sync);
         } break;
         case DPU_SET_DPU: {
+            printf("dpu_load_generic: switching, dpu_set.kind: DPU_SET_DPU\n");
             struct dpu_t *dpu = dpu_set.dpu;
             dpu->rank->dpu_addresses.freq = freq_addr;
             if ((status = dpu_load_dpu(dpu, runtime, elf_info)) != DPU_OK) {
