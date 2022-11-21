@@ -288,20 +288,20 @@ static u32 exec_cmd(struct dpu_rank_t *rank, u64 *commands,
 	invert_color(rank, ci_mask);
 
 	if ((status = ci_commit_commands(rank, commands)) != DPU_OK) {
-		printf("IN EXEC CMD ERROR COMMIT COMMANDS STATUS %d\n",status);
+		printf("exec_cmd: error commit commands, status: %d\n",status);
 		return status;
 	}
-	printf("IN EXEC CMD COMMIT COMMANDS STATUS %d\n",status);
+	printf("exec_cmd: commit commands: %d\n",status);
 	do {
 		if ((status = ci_update_commands(rank, data)) != DPU_OK) {
-			printf("IN EXEC CMD ERROR UPDATE COMMANDS STATUS %d\n",status);
+			printf("exec_cmd: error update commands, status: %d\n",status);
 			return status;
 		}
-		printf("IN EXEC CMD UPDATE COMMANDS STATUS %d\n",status);
+		printf("exec_cmd: update commands: %d\n",status);
 		in_progress = !determine_if_commands_are_finished(
 			rank, data, expected, result_masks, expected_color,
 			is_done);
-		printf("WE ARE IN THE DO WHILE LOOP (EXEC_CMD) PROGRESS : %d TIMEOUT %d NB_RETRIES %d \n", in_progress, timeout,nr_retries);
+		printf("exec_cmd: DO WHILE LOOP (EXEC_CMD) PROGRESS : %d TIMEOUT %d NB_RETRIES %d \n", in_progress, timeout,nr_retries);
 		timeout = (nr_retries--) == 0;
 	} while (in_progress && !timeout);
 
