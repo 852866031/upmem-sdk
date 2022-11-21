@@ -355,11 +355,13 @@ dpu_alloc(uint32_t nr_dpus, const char *profile, struct dpu_set_t *dpu_set)
         nr_dpus = current_nr_of_dpus;
     }
 
+    printf("DPU_ALLOC: checking disable_unused_dpus\n");
     if ((status = disable_unused_dpus(current_nr_of_dpus, nr_dpus, current_ranks, current_nr_of_ranks) != DPU_OK)) {
         printf("DPU_ALLOC: error disable_unused_dpus, status: %d\n", status);
         goto error_free_ranks;
     }
 
+    printf("DPU_ALLOC: checking init_dpu_set\n");
     if ((status = init_dpu_set(current_ranks, current_nr_of_ranks, dpu_set)) != DPU_OK) {
         printf("DPU_ALLOC: error init_dpu_set, status: %d\n", status);
         goto error_free_ranks;
