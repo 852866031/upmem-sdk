@@ -352,7 +352,7 @@ dpu_get_rank_of_type(const char *profile, struct dpu_rank_t **rank)
         goto free_dpus;
     }
     //dpu_rank->description->configuration.disable_reset_on_alloc = disable_reset_on_alloc;
-    dpu_rank->description->configuration.disable_reset_on_alloc = false;
+    dpu_rank->description->configuration.disable_reset_on_alloc = true;
 
     if (!fetch_integer_property(
             properties, DPU_PROFILE_PROPERTY_NR_JOBS_PER_RANK, &dpu_rank->api.nr_jobs, NR_JOBS_PER_RANK_DEFAULT)) {
