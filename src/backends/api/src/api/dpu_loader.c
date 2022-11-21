@@ -229,6 +229,8 @@ dpu_load_from_memory(struct dpu_set_t dpu_set, uint8_t *buffer, size_t buffer_si
 {
     LOG_FN(DEBUG, "%p %lu", buffer, buffer_size);
 
+    printf("dpu_load_from_memory: called\n");
+
     return dpu_load_generic(dpu_set, NULL, buffer, buffer_size, program, __dpu_load_elf_program_from_incbin);
 }
 
