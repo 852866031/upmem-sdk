@@ -458,7 +458,7 @@ dpu_free_rank(struct dpu_rank_t *rank)
 
     free(rank->debug.cmds_buffer.cmds);
 
-    //dpu_rank_handler_free_rank(rank, rank->handler_context);
+    dpu_rank_handler_free_rank(rank, rank->handler_context);
 
     dpu_unlock_rank(rank);
 
