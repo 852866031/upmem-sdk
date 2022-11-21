@@ -442,7 +442,7 @@ dpu_free_rank(struct dpu_rank_t *rank)
         free(dpu->debug_context);
     }
     free(rank->dpus);
- /*
+
     if (rank->profiling_context.mcount_stats) {
         for (uint8_t th_id = 0; th_id < nr_threads; ++th_id)
             if (rank->profiling_context.mcount_stats[th_id] != NULL) {
@@ -451,7 +451,7 @@ dpu_free_rank(struct dpu_rank_t *rank)
 
         free(rank->profiling_context.mcount_stats);
     }
-
+ /*
     if (rank->profiling_context.sample_stats) {
         free(rank->profiling_context.sample_stats);
     }
