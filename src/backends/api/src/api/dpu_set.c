@@ -370,7 +370,7 @@ dpu_alloc(uint32_t nr_dpus, const char *profile, struct dpu_set_t *dpu_set)
 
 error_free_ranks:
     for (unsigned int each_allocated_rank = 0; each_allocated_rank < current_nr_of_ranks; ++each_allocated_rank) {
-        //dpu_free_rank(current_ranks[each_allocated_rank]);
+        dpu_free_rank(current_ranks[each_allocated_rank]);
     }
     if (current_ranks != NULL) {
         free(current_ranks);

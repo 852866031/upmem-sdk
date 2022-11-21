@@ -433,6 +433,7 @@ dpu_free_rank(struct dpu_rank_t *rank)
 
     uint8_t nr_threads = rank->description->hw.dpu.nr_of_threads;
 
+   
     for (int each_dpu = 0; each_dpu < nr_dpus; ++each_dpu) {
         struct dpu_t *dpu = rank->dpus + each_dpu;
 
@@ -441,7 +442,7 @@ dpu_free_rank(struct dpu_rank_t *rank)
         free(dpu->debug_context);
     }
     free(rank->dpus);
-
+ /*
     if (rank->profiling_context.mcount_stats) {
         for (uint8_t th_id = 0; th_id < nr_threads; ++th_id)
             if (rank->profiling_context.mcount_stats[th_id] != NULL) {
@@ -463,7 +464,7 @@ dpu_free_rank(struct dpu_rank_t *rank)
 
     pthread_mutex_destroy(&(rank->mutex));
     free(rank);
-
+    */
     return DPU_OK;
 }
 
