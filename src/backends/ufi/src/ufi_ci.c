@@ -152,6 +152,7 @@ __API_SYMBOL__ u32 ci_exec_32bit_cmd(struct dpu_rank_t *rank, u64 *commands,
 	for (each_ci = 0; each_ci < nr_cis; ++each_ci) {
 		if (commands[each_ci] != CI_EMPTY) {
 			results[each_ci] = rank->data[each_ci];
+			printf("%u \n", rank->data[each_ci]);
 		}
 	}
 

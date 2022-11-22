@@ -230,7 +230,6 @@ static dpu_error_t dpu_bit_config(struct dpu_rank_t *rank,
 	FF(ufi_bit_config(rank, mask, NULL, bit_config_results));
 
 	bit_config_result = bit_config_results[__builtin_ctz(mask)];
-	printf("index: %d", __builtin_ctz(mask));
 
 	/* Let's verify that all CIs have the bit config result as the first CI. */
 	for (slice_id = 0;
