@@ -291,8 +291,8 @@ static dpu_error_t dpu_identity(struct dpu_rank_t *rank)
 
 		if (identity_results[slice_id] != identity_result) {
 			printf("inconsistent bit configuration between the different CIs (%u != %u), index: %d\n",
-				bit_config_results[slice_id],
-				bit_config_result, slice_id);
+				identity_results[slice_id],
+				identity_result, slice_id);
 			LOG_RANK(
 				WARNING, rank,
 				"inconsistent identity between the different CIs (0x%08x != 0x%08x)",
