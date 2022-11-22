@@ -265,6 +265,15 @@ __API_SYMBOL__ u32 ci_exec_reset_cmd(struct dpu_rank_t *rank, u64 *commands)
 	return DPU_OK;
 }
 
+
+static void print_cis(u64 *commands){
+	int i;
+	for(i=0; i<DPU_MAX_NR_CIS; i++){
+		printf("%llu\n", commands[i]);
+	}
+	printf("\n");
+}
+
 static u32 exec_cmd(struct dpu_rank_t *rank, u64 *commands,
 		    bool add_select_mask)
 {
@@ -292,11 +301,14 @@ static u32 exec_cmd(struct dpu_rank_t *rank, u64 *commands,
 		return status;
 	}
 	printf("exec_cmd: commit commands: %d\n",status);
+	print_cis(commands);
 	do {
 		if ((status = ci_update_commands(rank, data)) != DPU_OK) {
 			printf("exec_cmd: error update commands, status: %d\n",status);
 			return status;
 		}
+		printf("exec_cmd: commands read: %d\n",status);
+		print_cis(data);
 		printf("exec_cmd: update commands: %d\n",status);
 		in_progress = !determine_if_commands_are_finished(
 			rank, data, expected, result_masks, expected_color,
