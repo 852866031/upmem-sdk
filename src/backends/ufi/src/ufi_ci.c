@@ -299,9 +299,10 @@ static u32 exec_cmd(struct dpu_rank_t *rank, u64 *commands,
 
 	if ((status = ci_commit_commands(rank, commands)) != DPU_OK) {
 		printf("exec_cmd: error commit commands, status: %d\n",status);
+		print_cis(commands);
 		return status;
 	}
-	printf("[GUEST SDK] exec_cmd: commit commands: %d\n",status);
+	printf("[GUEST SDK] exec_cmd: just committed commands with status : %d\n",status);
 	print_cis(commands);
 	do {
 		
@@ -309,7 +310,7 @@ static u32 exec_cmd(struct dpu_rank_t *rank, u64 *commands,
 			printf("exec_cmd: error update commands, status: %d\n",status);
 			return status;
 		}
-		printf("[GUEST SDK] exec_cmd: update commands: %d\n",status);
+		printf("[GUEST SDK] exec_cmd: just updated commands with status: %d\n",status);
 		print_cis(data);
 		//printf("exec_cmd: update commands: %d\n",status);
 		in_progress = !determine_if_commands_are_finished(
