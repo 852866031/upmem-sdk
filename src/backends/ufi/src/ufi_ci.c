@@ -303,6 +303,7 @@ static u32 exec_cmd(struct dpu_rank_t *rank, u64 *commands,
 		return status;
 	}
 	printf("[GUEST SDK] exec_cmd: just committed commands with status : %d\n",status);
+	printf("Write\n");
 	print_cis(commands);
 	do {
 		
@@ -311,6 +312,7 @@ static u32 exec_cmd(struct dpu_rank_t *rank, u64 *commands,
 			return status;
 		}
 		printf("[GUEST SDK] exec_cmd: just updated commands with status: %d\n",status);
+		printf("Read\n");
 		print_cis(data);
 		//printf("exec_cmd: update commands: %d\n",status);
 		in_progress = !determine_if_commands_are_finished(
