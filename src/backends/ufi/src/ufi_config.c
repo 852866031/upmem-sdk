@@ -329,9 +329,9 @@ dpu_ci_shuffling_box_config(struct dpu_rank_t *rank,
 		 config->cpu2dpu, config->dpu2cpu, config->nibble_swap);
 
 	FF(ufi_select_cis(rank, &mask));
-	printf("SSSSSSSSSSSSS: IN SHUFFLING BOX CONFIG BEFORE UFI BIT CONFIG");
+//	printf("SSSSSSSSSSSSS: IN SHUFFLING BOX CONFIG BEFORE UFI BIT CONFIG");
 	FF(ufi_bit_config(rank, mask, config, NULL));
-	printf("SSSSSSSSSSSSS: IN SHUFFLING BOX CONFIG POST UFI BIT CONFIG");
+//	printf("SSSSSSSSSSSSS: IN SHUFFLING BOX CONFIG POST UFI BIT CONFIG");
 end:
 	return status;
 }
