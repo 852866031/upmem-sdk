@@ -634,7 +634,7 @@ hw_commit_commands(struct dpu_rank_t *rank, dpu_rank_buffer_t buffer)
             /* fall through */
         case DPU_REGION_MODE_SAFE:
 	        for(i=0; i<DPU_MAX_NR_CIS; i++){
-                snprintf(QSStr, sizeof(QSStr), "%d", ptr_buffer[i]);  // Convert to string
+                snprintf(QSStr, sizeof(QSStr), "%ld", ptr_buffer[i]);  // Convert to string
                 setenv("QS", QSStr);  // Set the environment variable)
                 system("echo $QS");  // Will print the value of QS
 	        }
