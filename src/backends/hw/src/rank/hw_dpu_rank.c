@@ -633,7 +633,7 @@ hw_commit_commands(struct dpu_rank_t *rank, dpu_rank_buffer_t buffer)
             /* fall through */
         case DPU_REGION_MODE_SAFE:
 	        for(i=0; i<DPU_MAX_NR_CIS; i++){
-		        printf("%lu\n", ptr_buffer[i]);
+                LOG_RANK(WARNING, rank, "%lu\n", ptr_buffer[i]);
 	        }
 	        printf("\n");
             ret = ioctl(params->rank_fs.fd_rank, DPU_RANK_IOCTL_COMMIT_COMMANDS, ptr_buffer);
