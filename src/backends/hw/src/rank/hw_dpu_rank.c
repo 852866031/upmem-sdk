@@ -651,7 +651,7 @@ hw_update_commands(struct dpu_rank_t *rank, dpu_rank_buffer_t buffer)
     hw_dpu_rank_allocation_parameters_t params = _this_params(rank->description);
     dpu_rank_buffer_t ptr_buffer = buffer;
     int ret;
-    LOGFN(WARNING, "here here");
+    LOG_FN(WARNING, "here here");
     switch (params->mode) {
         case DPU_REGION_MODE_PERF:
             params->translate.read_from_cis(&params->translate,
