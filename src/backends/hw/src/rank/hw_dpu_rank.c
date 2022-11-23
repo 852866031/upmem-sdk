@@ -631,7 +631,6 @@ hw_commit_commands(struct dpu_rank_t *rank, dpu_rank_buffer_t buffer)
             }
             /* fall through */
         case DPU_REGION_MODE_SAFE:
-            LOG_FN(WARNING, "there there");
             ret = ioctl(params->rank_fs.fd_rank, DPU_RANK_IOCTL_COMMIT_COMMANDS, ptr_buffer);
             if (ret) {
                 LOG_RANK(WARNING, rank, "%s", strerror(errno));
@@ -671,13 +670,11 @@ hw_update_commands(struct dpu_rank_t *rank, dpu_rank_buffer_t buffer)
             }
             /* fall through */
         case DPU_REGION_MODE_SAFE:
-        LOG_FN(WARNING, "Here here");
             ret = ioctl(params->rank_fs.fd_rank, DPU_RANK_IOCTL_UPDATE_COMMANDS, ptr_buffer);
             if (ret) {
                 LOG_RANK(WARNING, rank, "%s", strerror(errno));
                 return DPU_RANK_SYSTEM_ERROR;
             }
-
             break;
         default:
             return DPU_RANK_SYSTEM_ERROR;
@@ -692,7 +689,7 @@ hw_copy_to_rank(struct dpu_rank_t *rank, struct dpu_transfer_matrix *transfer_ma
     hw_dpu_rank_allocation_parameters_t params = _this_params(rank->description);
     struct dpu_transfer_matrix *ptr_transfer_matrix = transfer_matrix;
     int ret;
-
+    printf("wadawdawdwa");
     switch (params->mode) {
         case DPU_REGION_MODE_PERF:
             params->translate.write_to_rank(&params->translate, params->ptr_region, params->channel_id, ptr_transfer_matrix);
