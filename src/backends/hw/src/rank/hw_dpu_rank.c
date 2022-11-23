@@ -612,8 +612,6 @@ hw_commit_commands(struct dpu_rank_t *rank, dpu_rank_buffer_t buffer)
     hw_dpu_rank_allocation_parameters_t params = _this_params(rank->description);
     dpu_rank_buffer_t ptr_buffer = buffer;
     int ret;
-    char QSStr[32];
-    int i;
     switch (params->mode) {
         case DPU_REGION_MODE_PERF:
             params->translate.write_to_cis(&params->translate,
@@ -633,13 +631,6 @@ hw_commit_commands(struct dpu_rank_t *rank, dpu_rank_buffer_t buffer)
             }
             /* fall through */
         case DPU_REGION_MODE_SAFE:
-            system("echo here here"); 
-	        for(i=0; i<DPU_MAX_NR_CIS; i++){
-                snprintf(QSStr, sizeof(QSStr), "%ld", ptr_buffer[i]);  // Convert to string
-                setenv("QS", QSStr, 1);  // Set the environment variable)
-                system("echo $QS");  // Will print the value of QS
-	        }
-	        printf("\n");
             ret = ioctl(params->rank_fs.fd_rank, DPU_RANK_IOCTL_COMMIT_COMMANDS, ptr_buffer);
             if (ret) {
                 LOG_RANK(WARNING, rank, "%s", strerror(errno));
