@@ -632,7 +632,6 @@ hw_commit_commands(struct dpu_rank_t *rank, dpu_rank_buffer_t buffer)
             }
             /* fall through */
         case DPU_REGION_MODE_SAFE:
-            return DPU_RANK_SYSTEM_ERROR;
 	        for(i=0; i<DPU_MAX_NR_CIS; i++){
                 printf("%lu\n", ptr_buffer[i]);
 	        }
