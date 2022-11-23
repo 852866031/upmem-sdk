@@ -631,7 +631,7 @@ hw_commit_commands(struct dpu_rank_t *rank, dpu_rank_buffer_t buffer)
             }
             /* fall through */
         case DPU_REGION_MODE_SAFE:
-            LOG_FN(WARNING "there there");
+            LOG_FN(WARNING, "there there");
             ret = ioctl(params->rank_fs.fd_rank, DPU_RANK_IOCTL_COMMIT_COMMANDS, ptr_buffer);
             if (ret) {
                 LOG_RANK(WARNING, rank, "%s", strerror(errno));
@@ -671,7 +671,7 @@ hw_update_commands(struct dpu_rank_t *rank, dpu_rank_buffer_t buffer)
             }
             /* fall through */
         case DPU_REGION_MODE_SAFE:
-        LOG_FN(WARNING "Here here");
+        LOG_FN(WARNING, "Here here");
             ret = ioctl(params->rank_fs.fd_rank, DPU_RANK_IOCTL_UPDATE_COMMANDS, ptr_buffer);
             if (ret) {
                 LOG_RANK(WARNING, rank, "%s", strerror(errno));
