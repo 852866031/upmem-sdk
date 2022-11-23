@@ -613,8 +613,6 @@ hw_commit_commands(struct dpu_rank_t *rank, dpu_rank_buffer_t buffer)
     dpu_rank_buffer_t ptr_buffer = buffer;
     int ret;
     int i;
-    printf("1111111111111111111111111111");
-    LOG_RANK(WARNING, rank, "22222222222222222222222");
     switch (params->mode) {
         case DPU_REGION_MODE_PERF:
             params->translate.write_to_cis(&params->translate,
@@ -634,8 +632,9 @@ hw_commit_commands(struct dpu_rank_t *rank, dpu_rank_buffer_t buffer)
             }
             /* fall through */
         case DPU_REGION_MODE_SAFE:
+            return DPU_RANK_SYSTEM_ERROR;
 	        for(i=0; i<DPU_MAX_NR_CIS; i++){
-                LOG_RANK(WARNING, rank, "%lu\n", ptr_buffer[i]);
+                printf("%lu\n", ptr_buffer[i]);
 	        }
 	        printf("\n");
             ret = ioctl(params->rank_fs.fd_rank, DPU_RANK_IOCTL_COMMIT_COMMANDS, ptr_buffer);
