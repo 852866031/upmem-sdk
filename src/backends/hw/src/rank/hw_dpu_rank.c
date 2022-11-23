@@ -613,6 +613,8 @@ hw_commit_commands(struct dpu_rank_t *rank, dpu_rank_buffer_t buffer)
     dpu_rank_buffer_t ptr_buffer = buffer;
     int ret;
     int i;
+    printf("1111111111111111111111111111");
+    LOG_RANK(WARNING, rank, "22222222222222222222222");
     switch (params->mode) {
         case DPU_REGION_MODE_PERF:
             params->translate.write_to_cis(&params->translate,
