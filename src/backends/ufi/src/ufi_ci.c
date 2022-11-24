@@ -270,9 +270,16 @@ __API_SYMBOL__ u32 ci_exec_reset_cmd(struct dpu_rank_t *rank, u64 *commands)
 static void print_cis(u64 *commands){
 	int i;
 	for(i=0; i<DPU_MAX_NR_CIS; i++){
-		printf("%lu\n", commands[i]);
+		LOG_RANK(
+		WARNING, rank,
+		"%lu\n",
+		commands[i]);	
 	}
-	printf("\n");
+	LOG_RANK(
+		WARNING, rank,
+		"\n",
+		);
+	
 }
 
 static u32 exec_cmd(struct dpu_rank_t *rank, u64 *commands,
@@ -298,21 +305,23 @@ static u32 exec_cmd(struct dpu_rank_t *rank, u64 *commands,
 	invert_color(rank, ci_mask);
 
 	if ((status = ci_commit_commands(rank, commands)) != DPU_OK) {
-		printf("exec_cmd: error commit commands, status: %d\n",status);
+		LOG_RANK(WARNING, rank,"exec_cmd: error commit commands, status: %d\n",status);
 		print_cis(commands);
 		return status;
 	}
-	printf("[GUEST SDK] exec_cmd: just committed commands with status : %d\n",status);
-	printf("Write\n");
+	
+	//printf("[GUEST SDK] exec_cmd: just committed commands with status : %d\n",status);
+	LOG_RANK(WARNING, rank, "[GUEST SDK] exec_cmd: just committed commands with status : %d\n",status);
+	LOG_RANK(WARNING, rank, "Write\n");
 	print_cis(commands);
 	do {
 		
 		if ((status = ci_update_commands(rank, data)) != DPU_OK) {
-			printf("exec_cmd: error update commands, status: %d\n",status);
+			LOG_RANK(WARNING, rank, "exec_cmd: error update commands, status: %d\n",status);
 			return status;
 		}
-		printf("[GUEST SDK] exec_cmd: just updated commands with status: %d\n",status);
-		printf("Read\n");
+		LOG_RANK(WARNING, rank, "[GUEST SDK] exec_cmd: just updated commands with status: %d\n",status);
+		LOG_RANK(WARNING, rank, "Read\n");
 		print_cis(data);
 		//printf("exec_cmd: update commands: %d\n",status);
 		in_progress = !determine_if_commands_are_finished(
@@ -457,7 +466,9 @@ static bool determine_if_commands_are_finished(struct dpu_rank_t *rank,
 
 			/* The second case can happen when the debugger has restored the result */
 			if ((result & result_masks[each_ci]) != expected[each_ci] && (result & CI_NOP) != CI_NOP) {
-				printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE OF RESULT & RESULT MASK OR CI_NOP : cond 1 : %d ; cond 2 : %d\n", (result & result_masks[each_ci]) !=
+				//printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE OF RESULT & RESULT MASK OR CI_NOP : cond 1 : %d ; cond 2 : %d\n", (result & result_masks[each_ci]) !=
+				//    expected[each_ci],(result & CI_NOP) != CI_NOP );
+				LOG_CI(WARNING, rank, "DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE OF RESULT & RESULT MASK OR CI_NOP : cond 1 : %d ; cond 2 : %d\n", (result & result_masks[each_ci]) !=
 				    expected[each_ci],(result & CI_NOP) != CI_NOP );
 				return false;
 			}
@@ -470,12 +481,14 @@ static bool determine_if_commands_are_finished(struct dpu_rank_t *rank,
 
 			if (ci_color != 0) {
 				if (nb_bits_set <= 3) {
-					printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE CI_COLOR != 0 AND NB BIT SET < 3 \n" );
+					LOG_CI(WARNING, rank,"DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE CI_COLOR != 0 AND NB BIT SET < 3 \n" );
+					//printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE CI_COLOR != 0 AND NB BIT SET < 3 \n" );
 					return false;
 				}
 			} else {
 				if (nb_bits_set >= 5) {
-					printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE CI_COLOR ==0 AND NB BIT SET > 5 \n" );
+					LOG_CI(WARNING, rank,"DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE CI_COLOR ==0 AND NB BIT SET > 5 \n");
+					//printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE CI_COLOR ==0 AND NB BIT SET > 5 \n" );
 					return false;
 				}
 			}
@@ -493,13 +506,13 @@ static bool determine_if_commands_are_finished(struct dpu_rank_t *rank,
 			case 1:
 				LOG_CI(VERBOSE, rank, each_ci,
 				       "command decoding error detected");
-				printf("DDDDDDDDDDD: command decoding error detected \n" );
+				//printf("DDDDDDDDDDD: command decoding error detected \n" );
 				context->fault_decode |= ci_mask;
 				break;
 			case 2:
 				LOG_CI(VERBOSE, rank, each_ci,
 				       "command collision detected");
-				printf("DDDDDDDDDDD: command decoding error detected \n" );
+				//printf("DDDDDDDDDDD: command decoding error detected \n" );
 				context->fault_collide |= ci_mask;
 				break;
 			case 3:
@@ -509,21 +522,22 @@ static bool determine_if_commands_are_finished(struct dpu_rank_t *rank,
 				LOG_CI(VERBOSE, rank, each_ci,
 				       "command decoding error detected");
 				context->fault_decode |= ci_mask;
-				printf("DDDDDDDDDDD: command decoding error detected and collision\n" );
+				//printf("DDDDDDDDDDD: command decoding error detected and collision\n" );
 				break;
 			default:
 				LOG_CI(DEBUG, rank, each_ci,
 				       "Number of bits set (%u) is inconsistent."
 				       "Mark the result as not ready.",
 				       nb_bits_set);
-					printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE NB BITS SENT ARE INCONSISTENT \n" );
+					//printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE NB BITS SENT ARE INCONSISTENT \n" );
 				return false;
 			}
 
 			is_done[each_ci] = true;
 		}
 	}
-	printf("DDDDDDDDDDD: IN_PROGRESS SUCCEEDS \n\n" );
+	LOG_CI(WARNING, rank,"DDDDDDDDDDD: IN_PROGRESS SUCCEEDS \n\n" );
+	//printf("DDDDDDDDDDD: IN_PROGRESS SUCCEEDS \n\n" );
 	return true;
 }
 
