@@ -277,8 +277,7 @@ static void print_cis(u64 *commands){
 	}
 	LOG_FN(
 		WARNING,
-		"\n",
-		);
+		"\n");
 	
 }
 
