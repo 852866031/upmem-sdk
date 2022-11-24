@@ -270,13 +270,13 @@ __API_SYMBOL__ u32 ci_exec_reset_cmd(struct dpu_rank_t *rank, u64 *commands)
 static void print_cis(u64 *commands){
 	int i;
 	for(i=0; i<DPU_MAX_NR_CIS; i++){
-		LOG_RANK(
-		WARNING, rank,
+		LOG_FN(
+		WARNING,
 		"%lu\n",
 		commands[i]);	
 	}
-	LOG_RANK(
-		WARNING, rank,
+	LOG_FN(
+		WARNING,
 		"\n",
 		);
 	
