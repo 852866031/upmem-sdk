@@ -239,9 +239,9 @@ static dpu_error_t dpu_bit_config(struct dpu_rank_t *rank,
 			continue;
 
 		if (bit_config_results[slice_id] != bit_config_result) {
-			printf("inconsistent bit configuration between the different CIs (%u != %u), index: %d\n",
+			/*printf("inconsistent bit configuration between the different CIs (%u != %u), index: %d\n",
 				bit_config_results[slice_id],
-				bit_config_result, slice_id);
+				bit_config_result, slice_id);*/
 			LOG_RANK(
 				WARNING, rank,
 				"inconsistent bit configuration between the different CIs (0x%08x != 0x%08x)",
@@ -290,9 +290,9 @@ static dpu_error_t dpu_identity(struct dpu_rank_t *rank)
 			continue;
 
 		if (identity_results[slice_id] != identity_result) {
-			printf("inconsistent bit configuration between the different CIs (%u != %u), index: %d\n",
+			/*printf("inconsistent bit configuration between the different CIs (%u != %u), index: %d\n",
 				identity_results[slice_id],
-				identity_result, slice_id);
+				identity_result, slice_id);*/
 			LOG_RANK(
 				WARNING, rank,
 				"inconsistent identity between the different CIs (0x%08x != 0x%08x)",
@@ -1005,67 +1005,67 @@ __API_SYMBOL__ dpu_error_t ci_reset_rank(struct dpu_rank_t *rank)
 
 	bool all_dpus_are_enabled_save[DPU_MAX_NR_CIS];
 	dpu_selected_mask_t enabled_dpus_save[DPU_MAX_NR_CIS];
-	printf("FFFFFFFFFFFF: 0 PREWAVEGEN FETCH \n");
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 0 PREWAVEGEN FETCH \n");
 	fetch_dma_and_wavegen_configs(desc->hw.timings.fck_frequency_in_mhz,
 				      desc->hw.timings.clock_division,
 				      REFRESH_MODE_VALUE,
 				      !desc->configuration.ila_control_refresh,
 				      &std_dma_config, &wavegen_config);
-	printf("FFFFFFFFFFFF: 0 POSTWAVEGEN FETCH \n");
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 0 POSTWAVEGEN FETCH \n");
 	/* All DPUs are enabled during the reset */
 	save_enabled_dpus(rank, all_dpus_are_enabled_save, enabled_dpus_save,
 			  false);
-	printf("FFFFFFFFFFFF: 1 BEFORE STARTING \n");
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 1 BEFORE STARTING \n");
 	FF(dpu_byte_order(rank));
-	printf("FFFFFFFFFFFF: 2 DONE BYTE ORDER WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 2 DONE BYTE ORDER WITH STATUS %d  \n",status);
 	FF(dpu_soft_reset(rank, DPU_CLOCK_DIV8));
-	printf("FFFFFFFFFFFF: 3 DONE SOFT RESET WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 3 DONE SOFT RESET WITH STATUS %d  \n",status);
 	FF(dpu_bit_config(rank, bit_config));
-	printf("FFFFFFFFFFFF: 4 DONE BIT CONFIG WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 4 DONE BIT CONFIG WITH STATUS %d  \n",status);
 	FF(dpu_ci_shuffling_box_config(rank, bit_config));
-	printf("FFFFFFFFFFFF: 5 DONE BIT CONFIG WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 5 DONE CI SHUFFLING BOX CONFIG WITH STATUS %d  \n",status);
 	FF(dpu_soft_reset(rank, from_division_factor_to_dpu_enum(
 					desc->hw.timings.clock_division)));
-	printf("FFFFFFFFFFFF: 6 DONE SECOND SOFT RESET WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 6 DONE SECOND SOFT RESET WITH STATUS %d  \n",status);
 	FF(dpu_ci_shuffling_box_config(rank, bit_config));
-	printf("FFFFFFFFFFFF: 7 DONE CI SHUFFLING BOX WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 7 DONE CI SHUFFLING BOX WITH STATUS %d  \n",status);
 	FF(dpu_identity(rank));
-	printf("FFFFFFFFFFFF: 8 DONE DPU_IDENTITY WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 8 DONE DPU_IDENTITY WITH STATUS %d  \n",status);
 	FF(dpu_thermal_config(rank, desc->hw.timings.std_temperature));
-	printf("FFFFFFFFFFFF: 9 DONE THERMAL CONFIG WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 9 DONE THERMAL CONFIG WITH STATUS %d  \n",status);
 	FF(dpu_carousel_config(rank, &desc->hw.timings.carousel));
-	printf("FFFFFFFFFFFF: 10 DONE CAROUSEL CONFIG WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 10 DONE CAROUSEL CONFIG WITH STATUS %d  \n",status);
 	FF(dpu_iram_repair_config(rank));
-	printf("FFFFFFFFFFFF: 11 DONE IRAM REPAIR CONFIG WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 11 DONE IRAM REPAIR CONFIG WITH STATUS %d  \n",status);
 	save_enabled_dpus(rank, all_dpus_are_enabled_save, enabled_dpus_save,
 			  true);
 	
 	FF(dpu_wram_repair_config(rank));
-	printf("FFFFFFFFFFFF: 12 DONE SECOND IRAM REPAIR CONFIG WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 12 DONE SECOND IRAM REPAIR CONFIG WITH STATUS %d  \n",status);
 	save_enabled_dpus(rank, all_dpus_are_enabled_save, enabled_dpus_save,
 			  true);
 
 	FF(dpu_dma_config(rank, dma_config));
-	printf("FFFFFFFFFFFF: 13 DONE DMA CONFIG WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 13 DONE DMA CONFIG WITH STATUS %d  \n",status);
 	FF(dpu_dma_shuffling_box_config(rank, bit_config));
-	printf("FFFFFFFFFFFF: 14 DONE DMA SHUFFLING BOX CONFIG WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 14 DONE DMA SHUFFLING BOX CONFIG WITH STATUS %d  \n",status);
 	FF(dpu_wavegen_config(rank, &wavegen_config));
-	printf("FFFFFFFFFFFF: 15 DONE WAVEGEN CONFIG WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 15 DONE WAVEGEN CONFIG WITH STATUS %d  \n",status);
 	FF(dpu_clear_debug(rank));
-	printf("FFFFFFFFFFFF: 16 DONE DPU CLEAR DEBUG WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 16 DONE DPU CLEAR DEBUG WITH STATUS %d  \n",status);
 	FF(dpu_clear_run_bits(rank));
-	printf("FFFFFFFFFFFF: 17 DONE CLEAR RUN BITS WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 17 DONE CLEAR RUN BITS WITH STATUS %d  \n",status);
 	FF(dpu_set_pc_mode(rank, DPU_PC_MODE_16));
-	printf("FFFFFFFFFFFF: 18 DONE SET PC MODE WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 18 DONE SET PC MODE WITH STATUS %d  \n",status);
 	FF(dpu_set_stack_direction(rank, true));
-	printf("FFFFFFFFFFFF: 19 DONE SET STACK DIRECTION WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 19 DONE SET STACK DIRECTION WITH STATUS %d  \n",status);
 	FF(dpu_reset_internal_state(rank));
-	printf("FFFFFFFFFFFF: 20 DONE RESET INTERNAL STATE WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 20 DONE RESET INTERNAL STATE WITH STATUS %d  \n",status);
 	FF(dpu_switch_mux_for_rank(
 		rank, desc->configuration.api_must_switch_mram_mux));
-	printf("FFFFFFFFFFFF: 21 DONE SWITCH MUX WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 21 DONE SWITCH MUX WITH STATUS %d  \n",status);
 	FF(dpu_init_groups(rank, all_dpus_are_enabled_save, enabled_dpus_save));
-	printf("FFFFFFFFFFFF: 22 DONE DPU INIT GROUP WITH STATUS %d  \n",status);
+	LOG_FN(WARNING,"FFFFFFFFFFFF: 22 DONE DPU INIT GROUP WITH STATUS %d  \n",status);
 
 end:
 	return status;
