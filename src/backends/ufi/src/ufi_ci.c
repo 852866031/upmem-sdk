@@ -56,8 +56,8 @@ __API_SYMBOL__ u32 ci_commit_commands(struct dpu_rank_t *rank, u64 *commands)
 	ret = debug_record_last_cmd(rank, WRITE_DIR, commands);
 	if (ret != DPU_OK)
 		return ret;
-	LOG_FN(WARNING,"WRITE \n");
-	print_cis(commands);
+	//LOG_FN(WARNING,"WRITE \n");
+	//print_cis(commands);
 	if (handler->commit_commands(rank, commands) != DPU_RANK_SUCCESS) {
 		return DPU_ERR_DRIVER;
 	}
@@ -74,8 +74,8 @@ __API_SYMBOL__ u32 ci_update_commands(struct dpu_rank_t *rank, u64 *commands)
 	if (handler->update_commands(rank, commands) != DPU_RANK_SUCCESS) {
 		return DPU_ERR_DRIVER;
 	}
-	LOG_FN(WARNING,"READ \n");
-	print_cis(commands);
+	//LOG_FN(WARNING,"READ \n");
+	//print_cis(commands);
 	ret = debug_record_last_cmd(rank, READ_DIR, commands);
 	if (ret != DPU_OK)
 		return ret;
@@ -469,7 +469,7 @@ static bool determine_if_commands_are_finished(struct dpu_rank_t *rank,
 			if ((result & result_masks[each_ci]) != expected[each_ci] && (result & CI_NOP) != CI_NOP) {
 				//printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE OF RESULT & RESULT MASK OR CI_NOP : cond 1 : %d ; cond 2 : %d\n", (result & result_masks[each_ci]) !=
 				//    expected[each_ci],(result & CI_NOP) != CI_NOP );
-				LOG_RANK(WARNING, rank, "DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE OF RESULT & RESULT MASK OR CI_NOP : cond 1 : %d ; cond 2 : %d\n", (result & result_masks[each_ci]) !=
+				//LOG_RANK(WARNING, rank, "DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE OF RESULT & RESULT MASK OR CI_NOP : cond 1 : %d ; cond 2 : %d\n", (result & result_masks[each_ci]) !=
 				    expected[each_ci],(result & CI_NOP) != CI_NOP );
 				return false;
 			}
@@ -482,13 +482,13 @@ static bool determine_if_commands_are_finished(struct dpu_rank_t *rank,
 
 			if (ci_color != 0) {
 				if (nb_bits_set <= 3) {
-					LOG_RANK(WARNING, rank,"DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE CI_COLOR != 0 AND NB BIT SET < 3 \n" );
+					//LOG_RANK(WARNING, rank,"DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE CI_COLOR != 0 AND NB BIT SET < 3 \n" );
 					//printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE CI_COLOR != 0 AND NB BIT SET < 3 \n" );
 					return false;
 				}
 			} else {
 				if (nb_bits_set >= 5) {
-					LOG_RANK(WARNING, rank,"DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE CI_COLOR ==0 AND NB BIT SET > 5 \n");
+					//LOG_RANK(WARNING, rank,"DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE CI_COLOR ==0 AND NB BIT SET > 5 \n");
 					//printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE CI_COLOR ==0 AND NB BIT SET > 5 \n" );
 					return false;
 				}
@@ -537,7 +537,7 @@ static bool determine_if_commands_are_finished(struct dpu_rank_t *rank,
 			is_done[each_ci] = true;
 		}
 	}
-	LOG_RANK(WARNING, rank,"DDDDDDDDDDD: IN_PROGRESS SUCCEEDS \n\n" );
+	//LOG_RANK(WARNING, rank,"DDDDDDDDDDD: IN_PROGRESS SUCCEEDS \n\n" );
 	//printf("DDDDDDDDDDD: IN_PROGRESS SUCCEEDS \n\n" );
 	return true;
 }
