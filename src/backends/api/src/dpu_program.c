@@ -181,15 +181,18 @@ __API_SYMBOL__ dpu_error_t
 dpu_load_elf_program(dpu_elf_file_t *elf_info, const char *path, struct dpu_program_t *program, mram_size_t mram_size_hint)
 {
     dpu_error_t result;
+    printf("FFFFFFFF DPU_LOAD_ELF path : %s\n",path);
     if ((program->program_path = realpath(path, NULL)) == NULL) {
+        printf("FFFFFFFF DPU_LOAD_ELF program path failed");
         return DPU_ERR_SYSTEM;
     }
-
+    printf("FFFFFFFF DPU_LOAD_ELF program path : %s, ABOUT TO OPEN ELF\n",program->program_path);
     if ((result = dpu_elf_open(program->program_path, elf_info)) != DPU_OK) {
         free(program->program_path);
+        printf("FFFFFFFF DPU_LOAD_ELF FAILED TO OPEN ELF status : %d\n",result);
         return result;
     }
-
+    printf("FFFFFFFF DPU_LOAD_ELF ABOUT TO LOAD ELF\n");
     return dpu_load_elf_program_from_elf_info(elf_info, program, mram_size_hint);
 }
 
