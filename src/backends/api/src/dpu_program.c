@@ -183,7 +183,7 @@ dpu_load_elf_program(dpu_elf_file_t *elf_info, const char *path, struct dpu_prog
     dpu_error_t result;
     printf("FFFFFFFF DPU_LOAD_ELF path : %s\n",path);
     if ((program->program_path = realpath(path, NULL)) == NULL) {
-        printf("FFFFFFFF DPU_LOAD_ELF program path failed");
+        printf("FFFFFFFF DPU_LOAD_ELF program path failed\n");
         return DPU_ERR_SYSTEM;
     }
     printf("FFFFFFFF DPU_LOAD_ELF program path : %s, ABOUT TO OPEN ELF\n",program->program_path);
