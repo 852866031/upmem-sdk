@@ -224,7 +224,7 @@ static dpu_error_t dpu_bit_config(struct dpu_rank_t *rank,
 	dpu_slice_id_t slice_id;
 	uint32_t bit_config_result;
 
-	LOG_RANK(VERBOSE, rank, "");
+	//LOG_RANK(VERBOSE, rank, "");
 
 	FF(ufi_select_cis(rank, &mask));
 	FF(ufi_bit_config(rank, mask, NULL, bit_config_results));
@@ -263,7 +263,7 @@ static dpu_error_t dpu_bit_config(struct dpu_rank_t *rank,
 		config->dpu2cpu);
 
 end:
-	printf("dpu_bit_config status: %d\n",status);
+	//printf("dpu_bit_config status: %d\n",status);
 	return status;
 }
 
