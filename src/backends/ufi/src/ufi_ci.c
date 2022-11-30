@@ -312,7 +312,7 @@ static u32 exec_cmd(struct dpu_rank_t *rank, u64 *commands,
 	}
 	
 	//printf("[GUEST SDK] exec_cmd: just committed commands with status : %d\n",status);
-	LOG_RANK(WARNING, rank, "[GUEST SDK] exec_cmd: just committed commands with status : %d\n",status);
+	//LOG_RANK(WARNING, rank, "[GUEST SDK] exec_cmd: just committed commands with status : %d\n",status);
 	//LOG_RANK(WARNING, rank, "Write\n");
 	//print_cis(commands);
 	do {
@@ -321,7 +321,7 @@ static u32 exec_cmd(struct dpu_rank_t *rank, u64 *commands,
 			LOG_RANK(WARNING, rank, "exec_cmd: error update commands, status: %d\n",status);
 			return status;
 		}
-		LOG_RANK(WARNING, rank, "[GUEST SDK] exec_cmd: just updated commands with status: %d\n",status);
+		//LOG_RANK(WARNING, rank, "[GUEST SDK] exec_cmd: just updated commands with status: %d\n",status);
 		//LOG_RANK(WARNING, rank, "Read\n");
 		//print_cis(data);
 		//printf("exec_cmd: update commands: %d\n",status);
