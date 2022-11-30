@@ -259,6 +259,7 @@ __dpu_load_elf_program(dpu_elf_file_t *elf_info,
     struct dpu_program_t *program,
     mram_size_t mram_size_hint)
 {
+    printf("load_elf_program callback : dpu_load_elf_program");
     return dpu_load_elf_program(elf_info, path, program, mram_size_hint);
 }
 
