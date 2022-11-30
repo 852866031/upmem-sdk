@@ -32,7 +32,7 @@ determine_if_commands_are_finished(struct dpu_rank_t *rank, const u64 *data,
 
 static void log_temperature(struct dpu_rank_t *rank, u64 *results);
 
-static void print_cis(u64 *commands){
+/*static void print_cis(u64 *commands){
 	int i;
 	for(i=0; i<DPU_MAX_NR_CIS; i++){
 		LOG_FN(
@@ -44,7 +44,7 @@ static void print_cis(u64 *commands){
 		WARNING,
 		"\n");
 	
-}
+}*/
 
 __API_SYMBOL__ u32 ci_commit_commands(struct dpu_rank_t *rank, u64 *commands)
 {
