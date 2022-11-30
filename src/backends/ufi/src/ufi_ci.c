@@ -470,7 +470,7 @@ static bool determine_if_commands_are_finished(struct dpu_rank_t *rank,
 				//printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE OF RESULT & RESULT MASK OR CI_NOP : cond 1 : %d ; cond 2 : %d\n", (result & result_masks[each_ci]) !=
 				//    expected[each_ci],(result & CI_NOP) != CI_NOP );
 				//LOG_RANK(WARNING, rank, "DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE OF RESULT & RESULT MASK OR CI_NOP : cond 1 : %d ; cond 2 : %d\n", (result & result_masks[each_ci]) !=
-				    expected[each_ci],(result & CI_NOP) != CI_NOP );
+				//    expected[each_ci],(result & CI_NOP) != CI_NOP );
 				return false;
 			}
 
