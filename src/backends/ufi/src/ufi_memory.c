@@ -430,6 +430,7 @@ static dpu_error_t do_mram_transfer(struct dpu_rank_t *rank,
 	unsigned each_dpu;
 	LOG_RANK(DEBUG, rank, "enter");
 	LOG_RANK(VERBOSE, rank, "lol");
+	printf("lol\n");
 	for (each_dpu = 0; each_dpu < MAX_NR_DPUS_PER_RANK; each_dpu++) {
 		host_ptr |= (uintptr_t)matrix->ptr[each_dpu];
 	}
