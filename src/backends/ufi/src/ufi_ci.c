@@ -354,7 +354,7 @@ static u32 exec_cmd(struct dpu_rank_t *rank, u64 *commands,
 		return status;
 	}
 
-	LOGV_PACKET(rank, data, READ_DIR);
+	//LOGV_PACKET(rank, data, READ_DIR);
 
 	log_temperature(rank, data);
 
