@@ -428,7 +428,7 @@ static dpu_error_t do_mram_transfer(struct dpu_rank_t *rank,
 
 	uintptr_t host_ptr = 0;
 	unsigned each_dpu;
-	LOG_RANK(DEBUG, rank, "enter");
+	LOG_RANK(WARNING, rank, "enter");
 	for (each_dpu = 0; each_dpu < MAX_NR_DPUS_PER_RANK; each_dpu++) {
 		host_ptr |= (uintptr_t)matrix->ptr[each_dpu];
 	}
@@ -455,7 +455,7 @@ static dpu_error_t do_mram_transfer(struct dpu_rank_t *rank,
 		status = DPU_ERR_INTERNAL;
 		break;
 	}
-	LOG_RANK(DEBUG, rank, "out of do mram transfer");
+	LOG_RANK(WARNING, rank, "out of do mram transfer");
 	return status;
 }
 
