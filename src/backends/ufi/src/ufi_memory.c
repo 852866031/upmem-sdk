@@ -432,13 +432,14 @@ static dpu_error_t do_mram_transfer(struct dpu_rank_t *rank,
 	for (each_dpu = 0; each_dpu < MAX_NR_DPUS_PER_RANK; each_dpu++) {
 		host_ptr |= (uintptr_t)matrix->ptr[each_dpu];
 	}
+	LOG_RANK(WARNING, rank, "flag0");
 	if (!host_ptr) {
 		LOG_RANK(
 			WARNING, rank,
 			"transfer matrix does not contain any host ptr, do nothing");
 		return status;
 	}
-
+	LOG_RANK(WARNING, rank, "flag1");
 	switch (type) {
 	case DPU_TRANSFER_FROM_MRAM:
 		if (handler->copy_from_rank(rank, matrix) != DPU_RANK_SUCCESS) {
