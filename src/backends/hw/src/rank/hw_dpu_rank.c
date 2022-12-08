@@ -726,9 +726,7 @@ hw_copy_from_rank(struct dpu_rank_t *rank, struct dpu_transfer_matrix *transfer_
     LOG_FN(WARNING, "BEGIN");
     switch (params->mode) {
         case DPU_REGION_MODE_PERF:
-            LOG_FN(WARNING, "safe mode read from rank is called");
             params->translate.read_from_rank(&params->translate, params->ptr_region, params->channel_id, ptr_transfer_matrix);
-            LOG_FN(WARNING, "safe mode read from rank finished");
             break;
         case DPU_REGION_MODE_HYBRID:
             if ((params->translate.capabilities & CAP_HYBRID_CONTROL_INTERFACE) == 0) {
@@ -738,7 +736,9 @@ hw_copy_from_rank(struct dpu_rank_t *rank, struct dpu_transfer_matrix *transfer_
             }
             /* fall through */
         case DPU_REGION_MODE_SAFE:
+            LOG_FN(WARNING, "safe mode read from rank is called");
             ret = ioctl(params->rank_fs.fd_rank, DPU_RANK_IOCTL_READ_FROM_RANK, ptr_transfer_matrix);
+            LOG_FN(WARNING, "safe mode read from rank finished");
             if (ret) {
                 LOG_RANK(WARNING, rank, "%s", strerror(errno));
                 return DPU_RANK_SYSTEM_ERROR;
