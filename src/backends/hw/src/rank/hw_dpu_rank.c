@@ -723,7 +723,7 @@ hw_copy_from_rank(struct dpu_rank_t *rank, struct dpu_transfer_matrix *transfer_
     hw_dpu_rank_allocation_parameters_t params = _this_params(rank->description);
     struct dpu_transfer_matrix *ptr_transfer_matrix = transfer_matrix;
     int ret;
-    LOG_FN(WARNING, "ARE WE HERE?");
+    LOG_FN(WARNING, "BEGIN");
     switch (params->mode) {
         case DPU_REGION_MODE_PERF:
             params->translate.read_from_rank(&params->translate, params->ptr_region, params->channel_id, ptr_transfer_matrix);
@@ -747,7 +747,7 @@ hw_copy_from_rank(struct dpu_rank_t *rank, struct dpu_transfer_matrix *transfer_
         default:
             return DPU_RANK_SYSTEM_ERROR;
     }
-
+    LOG_FN(WARNING, "FINISH");
     return DPU_RANK_SUCCESS;
 }
 
