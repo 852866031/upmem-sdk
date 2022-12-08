@@ -409,9 +409,9 @@ extract_memory_repair_configuration(struct dpu_t *dpu,
 	repair_config->even_index = 0xFF;
 	repair_config->odd_index = 0xFF;
 
-	LOG_DPU(DEBUG, dpu, "repair info: number of corrupted addresses: %d",
+	/*LOG_DPU(DEBUG, dpu, "repair info: number of corrupted addresses: %d",
 		nr_of_corrupted_addr);
-
+	*/
 	for (each_corrupted_addr_index = 0;
 	     each_corrupted_addr_index < nr_of_corrupted_addr;
 	     ++each_corrupted_addr_index) {
@@ -539,12 +539,13 @@ extract_memory_repair_configuration(struct dpu_t *dpu,
 		repair_config->odd_index = 1;
 	}
 
+	/*
 	LOG_DPU(DEBUG, dpu,
 		"valid repair config: AB_MSBs: 0x%02x A_LSBs: 0x%01x B_LSBs: 0x%01x CD_MSBs: 0x%02x C_LSBs: 0x%01x D_LSBs: 0x%01x",
 		repair_config->AB_msbs, repair_config->A_lsbs,
 		repair_config->B_lsbs, repair_config->CD_msbs,
 		repair_config->C_lsbs, repair_config->D_lsbs);
-
+		*/
 	return true;
 }
 

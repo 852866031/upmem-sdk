@@ -307,7 +307,6 @@ dpu_copy_to_mrams(struct dpu_rank_t *rank, struct dpu_transfer_matrix *transfer_
 __PERF_PROFILING_SYMBOL__ __API_SYMBOL__ dpu_error_t
 dpu_copy_from_mrams(struct dpu_rank_t *rank, struct dpu_transfer_matrix *transfer_matrix)
 {
-    LOG_FN(WARNING, "are we here");
     LOG_RANK(VERBOSE, rank, "%p", transfer_matrix);
     dpu_error_t status;
 
