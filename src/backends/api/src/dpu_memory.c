@@ -248,7 +248,6 @@ dpu_copy_to_mram(struct dpu_t *dpu, mram_addr_t mram_byte_offset, const uint8_t 
 __API_SYMBOL__ dpu_error_t
 dpu_copy_from_mram(struct dpu_t *dpu, uint8_t *destination, mram_addr_t mram_byte_offset, mram_size_t nb_of_bytes)
 {
-    LOG_FN(WARNING, "Are we here?");
     if (!dpu->enabled) {
         return DPU_ERR_DPU_DISABLED;
     }
@@ -308,6 +307,7 @@ dpu_copy_to_mrams(struct dpu_rank_t *rank, struct dpu_transfer_matrix *transfer_
 __PERF_PROFILING_SYMBOL__ __API_SYMBOL__ dpu_error_t
 dpu_copy_from_mrams(struct dpu_rank_t *rank, struct dpu_transfer_matrix *transfer_matrix)
 {
+    LOG_FN(WARNING, "are we here");
     LOG_RANK(VERBOSE, rank, "%p", transfer_matrix);
     dpu_error_t status;
 
