@@ -448,8 +448,9 @@ static dpu_error_t do_mram_transfer(struct dpu_rank_t *rank,
 		}
 		break;
 	case DPU_TRANSFER_TO_MRAM:
-		LOG_RANK(WARNING, rank, "flag3");
+		LOG_RANK(WARNING, rank, "copy from rank");
 		if (handler->copy_to_rank(rank, matrix) != DPU_RANK_SUCCESS) {
+			LOG_RANK(WARNING, rank, "copy from rank not good");
 			status = DPU_ERR_DRIVER;
 		}
 		break;
