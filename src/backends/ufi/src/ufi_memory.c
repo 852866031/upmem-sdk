@@ -443,14 +443,14 @@ static dpu_error_t do_mram_transfer(struct dpu_rank_t *rank,
 	switch (type) {
 	case DPU_TRANSFER_FROM_MRAM:
 		LOG_RANK(WARNING, rank, "flag2");
+		LOG_RANK(WARNING, rank, "copy from rank");
 		if (handler->copy_from_rank(rank, matrix) != DPU_RANK_SUCCESS) {
+			LOG_RANK(WARNING, rank, "copy from rank not good");
 			status = DPU_ERR_DRIVER;
 		}
 		break;
 	case DPU_TRANSFER_TO_MRAM:
-		LOG_RANK(WARNING, rank, "copy from rank");
 		if (handler->copy_to_rank(rank, matrix) != DPU_RANK_SUCCESS) {
-			LOG_RANK(WARNING, rank, "copy from rank not good");
 			status = DPU_ERR_DRIVER;
 		}
 		break;
