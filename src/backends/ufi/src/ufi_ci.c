@@ -51,7 +51,7 @@ __API_SYMBOL__ u32 ci_commit_commands(struct dpu_rank_t *rank, u64 *commands)
 	struct dpu_rank_handler *handler = GET_HANDLER(rank);
 	u32 ret;
 
-	LOGV_PACKET(rank, commands, WRITE_DIR);
+	//LOGV_PACKET(rank, commands, WRITE_DIR);
 
 	ret = debug_record_last_cmd(rank, WRITE_DIR, commands);
 	if (ret != DPU_OK)
@@ -354,7 +354,7 @@ static u32 exec_cmd(struct dpu_rank_t *rank, u64 *commands,
 		return status;
 	}
 
-	//LOGV_PACKET(rank, data, READ_DIR);
+	//LOGV_PACKET(rank, data, READ_DIR); PUT IT BACK LATER
 
 	log_temperature(rank, data);
 
