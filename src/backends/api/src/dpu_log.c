@@ -222,7 +222,6 @@ dpulog_read_for_dpu_(struct dpu_t *dpu, dpu_log_print_fct_t print_fct, void *pri
     uint32_t printf_buffer_has_wrapped;
     api_status
         = get_printf_context(dpu, &printf_buffer_address, &printf_buffer_size, &printf_write_pointer, &printf_buffer_has_wrapped);\
-     LOG_FN(WARNING, "We are here");
     if (api_status != DPU_OK) {
         if (api_status == DPU_ERR_LOG_CONTEXT_MISSING) {
             LOG_DPU(WARNING, dpu, "dpu program might not use printf or the information has been corrupted");
@@ -236,7 +235,6 @@ dpulog_read_for_dpu_(struct dpu_t *dpu, dpu_log_print_fct_t print_fct, void *pri
         LOG_DPU(WARNING, dpu, "Could not display log buffer because the buffer was too small to contain all messages");
         return DPU_ERR_LOG_BUFFER_TOO_SMALL;
     }
-    printf("[SDK READ FROM RANK] BUFFER ALLOCATION");
     LOG_FN(WARNING, "[SDK READ FROM RANK] BUFFER ALLOCATION");
     uint32_t buffer_size = printf_write_pointer;
     uint32_t buffer_index = 0;
@@ -245,7 +243,6 @@ dpulog_read_for_dpu_(struct dpu_t *dpu, dpu_log_print_fct_t print_fct, void *pri
         LOG_DPU(WARNING, dpu, "Could not allocate memory for buffer to get log from dpu");
         return DPU_ERR_SYSTEM;
     }
-    printf("[SDK READ FROM RANK] BUFFER ALLOCATION DONE");
     LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] BUFFER ALLOCATION DONE");
     api_status = dpu_copy_from_mram(dpu, &buffer[buffer_index], printf_buffer_address, buffer_size);
     if (api_status != DPU_OK) {
@@ -253,7 +250,6 @@ dpulog_read_for_dpu_(struct dpu_t *dpu, dpu_log_print_fct_t print_fct, void *pri
         LOG_DPU(WARNING, dpu, "Could not read log buffer in mram ('%s')", dpu_error_to_string(api_status));
         return api_status;
     }
-    printf("[SDK READ FROM RANK] READ FROM MRAM DONE");
     LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] READ FROM MRAM DONE");
     // Write log buffer to stream
     api_status = dpulog_read_and_display_contents_of(buffer, buffer_size, print_fct, print_fct_arg);
