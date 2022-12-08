@@ -442,17 +442,20 @@ static dpu_error_t do_mram_transfer(struct dpu_rank_t *rank,
 	LOG_RANK(WARNING, rank, "flag1");
 	switch (type) {
 	case DPU_TRANSFER_FROM_MRAM:
+		LOG_RANK(WARNING, rank, "flag2");
 		if (handler->copy_from_rank(rank, matrix) != DPU_RANK_SUCCESS) {
 			status = DPU_ERR_DRIVER;
 		}
 		break;
 	case DPU_TRANSFER_TO_MRAM:
+		LOG_RANK(WARNING, rank, "flag3");
 		if (handler->copy_to_rank(rank, matrix) != DPU_RANK_SUCCESS) {
 			status = DPU_ERR_DRIVER;
 		}
 		break;
 
 	default:
+		LOG_RANK(WARNING, rank, "flag4");
 		status = DPU_ERR_INTERNAL;
 		break;
 	}
