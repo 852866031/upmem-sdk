@@ -235,7 +235,7 @@ dpulog_read_for_dpu_(struct dpu_t *dpu, dpu_log_print_fct_t print_fct, void *pri
         LOG_DPU(WARNING, dpu, "Could not display log buffer because the buffer was too small to contain all messages");
         return DPU_ERR_LOG_BUFFER_TOO_SMALL;
     }
-
+    printf("[SDK READ FROM RANK] BUFFER ALLOCATION");
     uint32_t buffer_size = printf_write_pointer;
     uint32_t buffer_index = 0;
     uint8_t *buffer = malloc(sizeof(char) * buffer_size);
@@ -243,23 +243,26 @@ dpulog_read_for_dpu_(struct dpu_t *dpu, dpu_log_print_fct_t print_fct, void *pri
         LOG_DPU(WARNING, dpu, "Could not allocate memory for buffer to get log from dpu");
         return DPU_ERR_SYSTEM;
     }
-
+    printf("[SDK READ FROM RANK] BUFFER ALLOCATION DONE");
     api_status = dpu_copy_from_mram(dpu, &buffer[buffer_index], printf_buffer_address, buffer_size);
     if (api_status != DPU_OK) {
         free(buffer);
         LOG_DPU(WARNING, dpu, "Could not read log buffer in mram ('%s')", dpu_error_to_string(api_status));
         return api_status;
     }
-
+    printf("[SDK READ FROM RANK] READ FROM MRAM DONE");
     // Write log buffer to stream
     api_status = dpulog_read_and_display_contents_of(buffer, buffer_size, print_fct, print_fct_arg);
+    printf("[SDK READ FROM RANK] PRINTING BUFFER (DISPLAY)");
     if (api_status != DPU_OK) {
         free(buffer);
         LOG_DPU(WARNING, dpu, "Could not display log buffer in stream ('%s')", dpu_error_to_string(api_status));
         return api_status;
     }
-
+    printf("[SDK READ FROM RANK] IS BUFFER NULL %d", buffer == NULL);
+    printf("[SDK READ FROM RANK] FREE BUFFER");
     free(buffer);
+    printf("[SDK READ FROM RANK] FREE BUFFER DONE");
     return DPU_OK;
 }
 
