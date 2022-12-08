@@ -221,7 +221,8 @@ dpulog_read_for_dpu_(struct dpu_t *dpu, dpu_log_print_fct_t print_fct, void *pri
     uint32_t printf_write_pointer;
     uint32_t printf_buffer_has_wrapped;
     api_status
-        = get_printf_context(dpu, &printf_buffer_address, &printf_buffer_size, &printf_write_pointer, &printf_buffer_has_wrapped);
+        = get_printf_context(dpu, &printf_buffer_address, &printf_buffer_size, &printf_write_pointer, &printf_buffer_has_wrapped);\
+     LOG_FN(WARNING, "We are here");
     if (api_status != DPU_OK) {
         if (api_status == DPU_ERR_LOG_CONTEXT_MISSING) {
             LOG_DPU(WARNING, dpu, "dpu program might not use printf or the information has been corrupted");
@@ -236,7 +237,7 @@ dpulog_read_for_dpu_(struct dpu_t *dpu, dpu_log_print_fct_t print_fct, void *pri
         return DPU_ERR_LOG_BUFFER_TOO_SMALL;
     }
     printf("[SDK READ FROM RANK] BUFFER ALLOCATION");
-    LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] BUFFER ALLOCATION");
+    LOG_FN(WARNING, "[SDK READ FROM RANK] BUFFER ALLOCATION");
     uint32_t buffer_size = printf_write_pointer;
     uint32_t buffer_index = 0;
     uint8_t *buffer = malloc(sizeof(char) * buffer_size);
