@@ -267,6 +267,7 @@ dpulog_read_for_dpu_(struct dpu_t *dpu, dpu_log_print_fct_t print_fct, void *pri
     LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] IS BUFFER NULL %d", buffer == NULL);
     printf("[SDK READ FROM RANK] FREE BUFFER");
     LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] FREE BUFFER");
+    fflush(stdout); 
     free(buffer);
     printf("[SDK READ FROM RANK] FREE BUFFER DONE");
     LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] FREE BUFFER DONE");
