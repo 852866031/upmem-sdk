@@ -271,7 +271,7 @@ dpu_copy_from_mram(struct dpu_t *dpu, uint8_t *destination, mram_addr_t mram_byt
 		if(*((uint8_t *) transfer_matrix.ptr[0] + k) != 0){
             uint32_t e = *((uint8_t *) transfer_matrix.ptr[0] + k);
             printf("%d, at index : %d", e, k);
-            if(e>=32 && e<=126) printf(", which is \n", (char) e);
+            if(e>=32 && e<=126) printf(", which is %c\n", (char) e);
             else printf(", not printable\n");
         }
 	}
