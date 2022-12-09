@@ -250,23 +250,24 @@ dpulog_read_for_dpu_(struct dpu_t *dpu, dpu_log_print_fct_t print_fct, void *pri
         LOG_DPU(WARNING, dpu, "Could not read log buffer in mram ('%s')", dpu_error_to_string(api_status));
         return api_status;
     }
-    LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] READ FROM MRAM DONE");
+    LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] READ FROM MRAM DONE\n");
     // Write log buffer to stream
     api_status = dpulog_read_and_display_contents_of(buffer, buffer_size, print_fct, print_fct_arg);
-    printf("[SDK READ FROM RANK] PRINTING BUFFER (DISPLAY)");
-    LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] PRINTING BUFFER (DISPLAY)");
+    printf("[SDK READ FROM RANK] PRINTING BUFFER (DISPLAY)\n");
+    printf("%s\n", (char *)buffer);
+    //LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] PRINTING BUFFER (DISPLAY)");
     if (api_status != DPU_OK) {
         free(buffer);
         LOG_DPU(WARNING, dpu, "Could not display log buffer in stream ('%s')", dpu_error_to_string(api_status));
         return api_status;
     }
-    printf("[SDK READ FROM RANK] IS BUFFER NULL %d", buffer == NULL);
-    LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] IS BUFFER NULL %d", buffer == NULL);
-    printf("[SDK READ FROM RANK] FREE BUFFER");
-    LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] FREE BUFFER");
+    printf("[SDK READ FROM RANK] IS BUFFER NULL %d\n", buffer == NULL);
+    //LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] IS BUFFER NULL %d\n", buffer == NULL);
+    //printf("[SDK READ FROM RANK] FREE BUFFER\n");
+    //LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] FREE BUFFER\n");
     free(buffer);
-    printf("[SDK READ FROM RANK] FREE BUFFER DONE");
-    LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] FREE BUFFER DONE");
+    printf("[SDK READ FROM RANK] FREE BUFFER DONE\n");
+    //LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] FREE BUFFER DONE\n");
     return DPU_OK;
 }
 
