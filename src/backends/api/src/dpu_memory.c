@@ -272,7 +272,7 @@ dpu_copy_from_mram(struct dpu_t *dpu, uint8_t *destination, mram_addr_t mram_byt
             uint32_t e = *((uint8_t *) transfer_matrix.ptr[0] + k);
             printf("%d, at index : %d", e, k);
             if(e>=33 && e<=126) printf(", corresponding printable char is %c\n", (char) e);
-            else printf(" and it is not a valid char to print\n")
+            else printf(" and it is not a valid char to print\n");
         }
 	}
     return status;
