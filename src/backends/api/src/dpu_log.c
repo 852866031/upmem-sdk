@@ -214,7 +214,7 @@ dpulog_read_for_dpu_(struct dpu_t *dpu, dpu_log_print_fct_t print_fct, void *pri
         LOG_DPU(WARNING, dpu, "dpu is disabled");
         return DPU_ERR_DPU_DISABLED;
     }
-
+    int i;
     dpu_error_t api_status;
     uint32_t printf_buffer_address;
     uint32_t printf_buffer_size;
@@ -254,7 +254,9 @@ dpulog_read_for_dpu_(struct dpu_t *dpu, dpu_log_print_fct_t print_fct, void *pri
     // Write log buffer to stream
     api_status = dpulog_read_and_display_contents_of(buffer, buffer_size, print_fct, print_fct_arg);
     printf("[SDK READ FROM RANK] PRINTING BUFFER (DISPLAY)\n");
-    //LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] PRINTING BUFFER (DISPLAY)");
+    for(i=0; i<buffer_size; i++){
+        printf("%c \n", (char) buffer[i]);
+    }
     if (api_status != DPU_OK) {
         free(buffer);
         LOG_DPU(WARNING, dpu, "Could not display log buffer in stream ('%s')", dpu_error_to_string(api_status));
