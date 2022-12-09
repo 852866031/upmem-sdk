@@ -214,7 +214,7 @@ dpulog_read_for_dpu_(struct dpu_t *dpu, dpu_log_print_fct_t print_fct, void *pri
         LOG_DPU(WARNING, dpu, "dpu is disabled");
         return DPU_ERR_DPU_DISABLED;
     }
-    int i;
+    uint32_t i;
     dpu_error_t api_status;
     uint32_t printf_buffer_address;
     uint32_t printf_buffer_size;
