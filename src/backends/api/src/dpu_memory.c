@@ -266,7 +266,7 @@ dpu_copy_from_mram(struct dpu_t *dpu, uint8_t *destination, mram_addr_t mram_byt
     transfer_matrix.size = nb_of_bytes;
     transfer_matrix.offset = mram_byte_offset;
     status = dpu_copy_from_mrams(rank, &transfer_matrix);
-    int k;
+    uint32_t k;
 	for (k = 0; k<transfer_matrix.size; k++) {
 		if(*((uint8_t *) transfer_matrix.ptr[0] + k) != 0){
             printf("%d, at index : %d", *((uint8_t *) transfer_matrix.ptr[0] + k),k);
