@@ -269,7 +269,7 @@ dpu_copy_from_mram(struct dpu_t *dpu, uint8_t *destination, mram_addr_t mram_byt
     uint32_t k;
 	for (k = 0; k<transfer_matrix.size; k++) {
 		if(*((uint8_t *) transfer_matrix.ptr[0] + k) != 0){
-            printf("%d, at index : %d", *((uint8_t *) transfer_matrix.ptr[0] + k),k);
+            printf("%d, at index : %d\n", *((uint8_t *) transfer_matrix.ptr[0] + k),k);
         }
 	}
     return status;
