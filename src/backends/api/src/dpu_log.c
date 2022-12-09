@@ -255,20 +255,16 @@ dpulog_read_for_dpu_(struct dpu_t *dpu, dpu_log_print_fct_t print_fct, void *pri
     api_status = dpulog_read_and_display_contents_of(buffer, buffer_size, print_fct, print_fct_arg);
     printf("[SDK READ FROM RANK] PRINTING BUFFER (DISPLAY)\n");
     for(i=0; i<buffer_size; i++){
-        printf("%c \n", (char) buffer[i]);
+        printf("%c ", (char) buffer[i]);
     }
+    printf("\n")
     if (api_status != DPU_OK) {
         free(buffer);
         LOG_DPU(WARNING, dpu, "Could not display log buffer in stream ('%s')", dpu_error_to_string(api_status));
         return api_status;
-    }
-    printf("[SDK READ FROM RANK] IS BUFFER NULL %d\n", buffer == NULL);
-    //LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] IS BUFFER NULL %d\n", buffer == NULL);
-    //printf("[SDK READ FROM RANK] FREE BUFFER\n");
-    //LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] FREE BUFFER\n");
+    };
     free(buffer);
-    printf("[SDK READ FROM RANK] FREE BUFFER DONE\n");
-    //LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] FREE BUFFER DONE\n");
+    printf("[SDK READ FROM RANK] Finish\n");
     return DPU_OK;
 }
 
