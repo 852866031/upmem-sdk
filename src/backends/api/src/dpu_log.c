@@ -257,7 +257,7 @@ dpulog_read_for_dpu_(struct dpu_t *dpu, dpu_log_print_fct_t print_fct, void *pri
     for(i=0; i<buffer_size; i++){
         printf("%c ", (char) buffer[i]);
     }
-    printf("\n")
+    printf("\n");
     if (api_status != DPU_OK) {
         free(buffer);
         LOG_DPU(WARNING, dpu, "Could not display log buffer in stream ('%s')", dpu_error_to_string(api_status));
