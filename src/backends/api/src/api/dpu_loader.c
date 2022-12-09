@@ -148,10 +148,10 @@ dpu_load_generic(struct dpu_set_t dpu_set,
     dpu_elf_file_t elf_info;
     struct dpu_program_t *runtime;
 
-    printf("dpu_load_generic: called\n");
+    //printf("dpu_load_generic: called\n");
     if ((runtime = malloc(sizeof(*runtime))) == NULL) {
         status = DPU_ERR_SYSTEM;
-        printf("dpu_load_generic: error malloc, status: %d\n", status);
+        //printf("dpu_load_generic: error malloc, status: %d\n", status);
         goto end;
     }
     dpu_init_program_ref(runtime);
@@ -173,7 +173,7 @@ dpu_load_generic(struct dpu_set_t dpu_set,
 
     switch (dpu_set.kind) {
         case DPU_SET_RANKS: {
-            printf("dpu_load_generic: switching, dpu_set.kind: DPU_SET_RANKS\n");
+            //printf("dpu_load_generic: switching, dpu_set.kind: DPU_SET_RANKS\n");
             uint32_t nr_jobs_per_rank;
             struct dpu_thread_job_sync sync;
             DPU_THREAD_JOB_GET_JOBS(
@@ -191,7 +191,7 @@ dpu_load_generic(struct dpu_set_t dpu_set,
             status = dpu_thread_job_do_jobs(dpu_set.list.ranks, dpu_set.list.nr_ranks, nr_jobs_per_rank, jobs, true, &sync);
         } break;
         case DPU_SET_DPU: {
-            printf("dpu_load_generic: switching, dpu_set.kind: DPU_SET_DPU\n");
+            //printf("dpu_load_generic: switching, dpu_set.kind: DPU_SET_DPU\n");
             struct dpu_t *dpu = dpu_set.dpu;
             dpu->rank->dpu_addresses.freq = freq_addr;
             if ((status = dpu_load_dpu(dpu, runtime, elf_info)) != DPU_OK) {
@@ -203,7 +203,7 @@ dpu_load_generic(struct dpu_set_t dpu_set,
             status = DPU_ERR_INTERNAL;
             goto free_runtime;
     }
-    printf("dpu_load_generic: out switch\n");
+    //printf("dpu_load_generic: out switch\n");
 
     if (program != NULL) {
         *program = runtime;
@@ -211,14 +211,14 @@ dpu_load_generic(struct dpu_set_t dpu_set,
     goto close_elf;
 
 free_runtime:
-    printf("dpu_load_generic end, enter free runtime\n");
+    //printf("dpu_load_generic end, enter free runtime\n");
     runtime->reference_count = 1;
     dpu_free_program(runtime);
 close_elf:
-    printf("dpu_load_generic end, enter dpu_elf_close\n");
+    //printf("dpu_load_generic end, enter dpu_elf_close\n");
     dpu_elf_close(elf_info);
 end:
-    printf("dpu_load_generic end, status: %d\n", status);
+    //printf("dpu_load_generic end, status: %d\n", status);
     return status;
 }
 
