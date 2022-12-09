@@ -254,7 +254,6 @@ dpulog_read_for_dpu_(struct dpu_t *dpu, dpu_log_print_fct_t print_fct, void *pri
     // Write log buffer to stream
     api_status = dpulog_read_and_display_contents_of(buffer, buffer_size, print_fct, print_fct_arg);
     printf("[SDK READ FROM RANK] PRINTING BUFFER (DISPLAY)\n");
-    printf("%s\n", (char *)buffer);
     //LOG_DPU(WARNING, dpu, "[SDK READ FROM RANK] PRINTING BUFFER (DISPLAY)");
     if (api_status != DPU_OK) {
         free(buffer);
