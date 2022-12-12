@@ -248,7 +248,7 @@ dpu_copy_to_mram(struct dpu_t *dpu, mram_addr_t mram_byte_offset, const uint8_t 
 __API_SYMBOL__ dpu_error_t
 dpu_copy_from_mram(struct dpu_t *dpu, uint8_t *destination, mram_addr_t mram_byte_offset, mram_size_t nb_of_bytes)
 {
-    uint32_t k;
+    //uint32_t k;
     if (!dpu->enabled) {
         return DPU_ERR_DPU_DISABLED;
     }
@@ -266,24 +266,24 @@ dpu_copy_from_mram(struct dpu_t *dpu, uint8_t *destination, mram_addr_t mram_byt
 
     transfer_matrix.size = nb_of_bytes;
     transfer_matrix.offset = mram_byte_offset;
-    for (k = 0; k<transfer_matrix.size; k++) {
+    /* for (k = 0; k<transfer_matrix.size; k++) {
 		if(*((uint8_t *) transfer_matrix.ptr[0] + k) != 0){
             uint32_t e = *((uint8_t *) transfer_matrix.ptr[0] + k);
             printf("%d, at index : %d", e, k);
             if(e>=32 && e<=126) printf(", which is %c\n", (char) e);
             else printf(", not printable\n");
         }
-	}
+	} */
     status = dpu_copy_from_mrams(rank, &transfer_matrix);
     
-	for (k = 0; k<transfer_matrix.size; k++) {
+	/* for (k = 0; k<transfer_matrix.size; k++) {
 		if(*((uint8_t *) transfer_matrix.ptr[0] + k) != 0){
             uint32_t e = *((uint8_t *) transfer_matrix.ptr[0] + k);
             printf("%d, at index : %d", e, k);
             if(e>=32 && e<=126) printf(", which is %c\n", (char) e);
             else printf(", not printable\n");
         }
-	}
+	} */
     return status;
 }
 
