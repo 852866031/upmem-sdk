@@ -293,15 +293,15 @@ dpu_broadcast_to(struct dpu_set_t dpu_set,
     dpu_error_t status;
     struct dpu_program_t *program;
     struct dpu_symbol_t symbol;
-
+    printf("[SDK] BEFORE GET COMMON PROGRAM\n");
     if ((status = dpu_get_common_program(&dpu_set, &program)) != DPU_OK) {
         return status;
     }
-
+    printf("[SDK] BEFORE GET SYMBOL\n");
     if ((status = dpu_get_symbol(program, symbol_name, &symbol)) != DPU_OK) {
         return status;
     }
-
+    printf("[SDK] BEFORE BROADCAST TO SYMBOL\n");
     return dpu_broadcast_to_symbol(dpu_set, symbol, symbol_offset, src, length, flags);
 }
 
@@ -315,16 +315,19 @@ dpu_broadcast_to_symbol(struct dpu_set_t dpu_set,
 {
     LOG_FN(DEBUG, "0x%08x, %d, %d, %zd, 0x%x", symbol.address, symbol.size, symbol_offset, length, flags);
     dpu_error_t status = DPU_OK;
-
+    printf("[SDK] [SSSSSS] IN BROADCAST TO SYMBOL\n");
     switch (dpu_set.kind) {
         case DPU_SET_RANKS:
             status = dpu_broadcast_to_symbol_for_ranks(
                 dpu_set.list.ranks, dpu_set.list.nr_ranks, symbol, symbol_offset, src, length, flags);
+            printf("[SDK] [SSSSSS] DONE BROADCAST TO SYMBOL FOR RANKS\n");
             break;
         case DPU_SET_DPU:
             status = dpu_copy_symbol_dpu(dpu_set.dpu, symbol, symbol_offset, (void *)src, length, DPU_XFER_TO_DPU, flags);
+            printf("[SDK] [SSSSSS] DONE COPY SYMBOL DPU\n");
             break;
         default:
+            printf("[SDK] [SSSSSS] ERROR INTERNAL\n");
             return DPU_ERR_INTERNAL;
     }
 
