@@ -181,6 +181,7 @@ dpu_broadcast_to_symbol_for_ranks(struct dpu_rank_t **ranks,
     printf("[SDK] [QQQQQQQQ] done set job type\n");
     uint32_t nr_jobs_per_rank;
     struct dpu_thread_job_sync sync;
+    printf("[SDK] [QQQQQQQQ] BEFORE GET JOBS\n");
     DPU_THREAD_JOB_GET_JOBS(ranks, nr_ranks, nr_jobs_per_rank, jobs, &sync, SYNCHRONOUS_FLAGS(flags), status);
     printf("[SDK] [QQQQQQQQ] GET JOBS DONE\n");
     struct dpu_rank_t *rank __attribute__((unused));
