@@ -191,7 +191,7 @@ dpu_broadcast_to_symbol_for_ranks(struct dpu_rank_t **ranks,
         job->length = length;
         job->buffer = src;
     });
-
+    printf("[SDK] [QQQQQQQQ] BEFORE DO JOBS\n");
     status = dpu_thread_job_do_jobs(ranks, nr_ranks, nr_jobs_per_rank, jobs, SYNCHRONOUS_FLAGS(flags), &sync);
 
     return status;
