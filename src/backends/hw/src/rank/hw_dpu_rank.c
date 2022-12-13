@@ -703,7 +703,9 @@ hw_copy_to_rank(struct dpu_rank_t *rank, struct dpu_transfer_matrix *transfer_ma
             }
             /* fall through */
         case DPU_REGION_MODE_SAFE:
+            LOG_FN(WARNING, "safe mode write to rank is called");
             ret = ioctl(params->rank_fs.fd_rank, DPU_RANK_IOCTL_WRITE_TO_RANK, ptr_transfer_matrix);
+            LOG_FN(WARNING, "safe mode write to rank is finished");
             if (ret) {
                 LOG_RANK(WARNING, rank, "%s", strerror(errno));
                 return DPU_RANK_SYSTEM_ERROR;
@@ -723,7 +725,6 @@ hw_copy_from_rank(struct dpu_rank_t *rank, struct dpu_transfer_matrix *transfer_
     hw_dpu_rank_allocation_parameters_t params = _this_params(rank->description);
     struct dpu_transfer_matrix *ptr_transfer_matrix = transfer_matrix;
     int ret;
-    LOG_FN(WARNING, "BEGIN");
     switch (params->mode) {
         case DPU_REGION_MODE_PERF:
             params->translate.read_from_rank(&params->translate, params->ptr_region, params->channel_id, ptr_transfer_matrix);
@@ -748,7 +749,6 @@ hw_copy_from_rank(struct dpu_rank_t *rank, struct dpu_transfer_matrix *transfer_
         default:
             return DPU_RANK_SYSTEM_ERROR;
     }
-    LOG_FN(WARNING, "FINISH");
     return DPU_RANK_SUCCESS;
 }
 
