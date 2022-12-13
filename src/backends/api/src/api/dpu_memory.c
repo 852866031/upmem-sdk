@@ -318,11 +318,13 @@ dpu_broadcast_to_symbol(struct dpu_set_t dpu_set,
     printf("[SDK] [SSSSSS] IN BROADCAST TO SYMBOL\n");
     switch (dpu_set.kind) {
         case DPU_SET_RANKS:
+        printf("[SDK] [SSSSSS] BEFORE BROADCAST TO SYMBOL FOR RANKS\n");
             status = dpu_broadcast_to_symbol_for_ranks(
                 dpu_set.list.ranks, dpu_set.list.nr_ranks, symbol, symbol_offset, src, length, flags);
             printf("[SDK] [SSSSSS] DONE BROADCAST TO SYMBOL FOR RANKS\n");
             break;
         case DPU_SET_DPU:
+        printf("[SDK] [SSSSSS] BEFORE COPY SYMBOL DPU\n");
             status = dpu_copy_symbol_dpu(dpu_set.dpu, symbol, symbol_offset, (void *)src, length, DPU_XFER_TO_DPU, flags);
             printf("[SDK] [SSSSSS] DONE COPY SYMBOL DPU\n");
             break;
