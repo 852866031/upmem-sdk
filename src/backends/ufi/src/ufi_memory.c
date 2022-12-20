@@ -428,24 +428,19 @@ static dpu_error_t do_mram_transfer(struct dpu_rank_t *rank,
 
 	uintptr_t host_ptr = 0;
 	unsigned each_dpu;
-	LOG_RANK(WARNING, rank, "enter");
 	for (each_dpu = 0; each_dpu < MAX_NR_DPUS_PER_RANK; each_dpu++) {
 		host_ptr |= (uintptr_t)matrix->ptr[each_dpu];
 	}
-	LOG_RANK(WARNING, rank, "flag0");
 	if (!host_ptr) {
 		LOG_RANK(
-			WARNING, rank,
+			VERBOSE, rank,
 			"transfer matrix does not contain any host ptr, do nothing");
 		return status;
 	}
-	LOG_RANK(WARNING, rank, "flag1");
 	switch (type) {
 	case DPU_TRANSFER_FROM_MRAM:
-		LOG_RANK(WARNING, rank, "flag2");
-		LOG_RANK(WARNING, rank, "copy from rank");
 		if (handler->copy_from_rank(rank, matrix) != DPU_RANK_SUCCESS) {
-			LOG_RANK(WARNING, rank, "copy from rank not good");
+			LOG_RANK(VERBOSE, rank, "copy from rank not good");
 			status = DPU_ERR_DRIVER;
 		}
 		break;
@@ -456,12 +451,9 @@ static dpu_error_t do_mram_transfer(struct dpu_rank_t *rank,
 		break;
 
 	default:
-		LOG_RANK(WARNING, rank, "flag4");
 		status = DPU_ERR_INTERNAL;
 		break;
 	}
-	LOG_RANK(WARNING, rank, "finished");
-	LOG_RANK(WARNING, rank, "out of do mram transfer");
 	return status;
 }
 
