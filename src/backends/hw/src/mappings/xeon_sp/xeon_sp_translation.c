@@ -267,7 +267,7 @@ xeon_sp_write_to_cis(__attribute__((unused)) struct dpu_region_address_translati
 
     //byte_interleave_avx512(block_data, ci_address, true);
     ///// ///// ///// ///// ///// ///// /////
-    byte_interleave_avx2(block_data, ci_address, true);
+    byte_interleave_avx2(block_data, ci_address);
 
     tr->one_read = false;
 }
@@ -314,7 +314,7 @@ xeon_sp_read_from_cis(__attribute__((unused)) struct dpu_region_address_translat
      */
     //byte_interleave_avx512(input, block_data, false);
     
-    byte_interleave_avx2(input, block_data, false);
+    byte_interleave_avx2(input, block_data);
      /// /// /// /// /// /// ///
 
     tr->one_read = true;
@@ -460,7 +460,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
             }
 
             //byte_interleave_avx512(cache_line, (uint64_t *)((uint8_t *)ptr_dest + offset), true);
-            byte_interleave_avx2(cache_line, (uint64_t *)((uint8_t *)ptr_dest + offset), true);
+            byte_interleave_avx2(cache_line, (uint64_t *)((uint8_t *)ptr_dest + offset));
             /// /// /// /// /// /// ///
         }
 
