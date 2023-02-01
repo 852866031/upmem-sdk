@@ -441,9 +441,6 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
      */
     FOREACH_DPU_MULTITHREAD(dpu_id, idx, dpu_id_start, dpu_id_stop)
     {
-        clock_t start = clock();
-
-
         uint32_t i;
         uint8_t *ptr_dest = (uint8_t *)xeon_sp_priv->base_region_addr + BANK_START(dpu_id);
         bool do_dpu_transfer = false;
@@ -454,14 +451,13 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
                 break;
             }
         }
-          clock_t end = clock();
-          double time_elapsed = ((double)(end - start)) / CLOCKS_PER_SEC;
-          printf("TEMPS PASSÉ DANS WRITE TO RANK: %f secondes\n", time_elapsed);
-          printf("LA TAILLE DE TRANSFERT EST : %d",size_transfer );
+        
 
         if (!do_dpu_transfer)
             continue;
 
+        clock_t start = clock();
+        
         for (i = 0; i < size_transfer / sizeof(uint64_t); ++i) {
             uint32_t mram_64_bit_word_offset = apply_address_translation_on_mram_offset(i * 8 + offset) / 8;
             uint64_t next_data = BANK_OFFSET_NEXT_DATA(mram_64_bit_word_offset * sizeof(uint64_t));
@@ -476,7 +472,9 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
             //byte_interleave_avx2(cache_line, (uint64_t *)((uint8_t *)ptr_dest + offset));
             /// /// /// /// /// /// ///
         }
-
+          clock_t end = clock();
+          double time_elapsed = ((double)(end - start)) / CLOCKS_PER_SEC;
+          printf("TEMPS PASSÉ DANS WRITE TO RANK: %f secondes\n", time_elapsed);
         __builtin_ia32_mfence();
 
         /* Here we use non-temporal stores. These stores are "write-combining" and bypass the CPU cache,
