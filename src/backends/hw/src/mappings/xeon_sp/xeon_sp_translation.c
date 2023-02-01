@@ -457,7 +457,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
             continue;
 
         double total = 0;
-        
+        clock_t start = clock();
         for (i = 0; i < size_transfer / sizeof(uint64_t); ++i) {
             
             
@@ -472,16 +472,17 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
                     cache_line[ci_id] = *((uint64_t *)xfer_matrix->ptr[idx + ci_id] + i);
             }
            
-            clock_t start = clock();
+            
 
             byte_interleave_avx512(cache_line, (uint64_t *)((uint8_t *)ptr_dest + offset), true);
             
-             clock_t end = clock();
-            double time_elapsed = ((double)(end - start)) / CLOCKS_PER_SEC;
-            total+= time_elapsed;
+          
             //byte_interleave_avx2(cache_line, (uint64_t *)((uint8_t *)ptr_dest + offset));
             /// /// /// /// /// /// ///
         }
+           clock_t end = clock();
+            double time_elapsed = ((double)(end - start)) / CLOCKS_PER_SEC;
+            total+= time_elapsed;
         printf("TEMPS PASSÉ DANS TRANSFERT: %.10f secondes\n", total / ( size_transfer / sizeof(uint64_t)));
 
         __builtin_ia32_mfence();
