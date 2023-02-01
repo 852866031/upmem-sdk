@@ -433,7 +433,10 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
 
     if (!size_transfer)
         return;
-
+    
+    clock_t end = clock();
+    double time_elapsed = ((double)(end - start)) / CLOCKS_PER_SEC;
+    printf("TEMPS PASSÉ DANS WRITE TO RANK: %f secondes\n", time_elapsed);
     /* Works only for transfers:
      * - of same size and same offset on the same line
      * - size and offset are aligned on 8B
@@ -478,9 +481,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
          */
     }
 
-    clock_t end = clock();
-    double time_elapsed = ((double)(end - start)) / CLOCKS_PER_SEC;
-    printf("TEMPS PASSÉ DANS WRITE TO RANK: %f secondes\n", time_elapsed);
+ 
 }
 
 static void
