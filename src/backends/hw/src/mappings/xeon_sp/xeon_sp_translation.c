@@ -457,8 +457,8 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
           clock_t end = clock();
           double time_elapsed = ((double)(end - start)) / CLOCKS_PER_SEC;
           printf("TEMPS PASSÉ DANS WRITE TO RANK: %f secondes\n", time_elapsed);
+          printf("LA TAILLE DE TRANSFERT EST : %d",size_transfer );
 
-          
         if (!do_dpu_transfer)
             continue;
 
