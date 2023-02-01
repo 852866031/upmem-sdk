@@ -459,14 +459,15 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
          struct timespec start, end;
          double elapsed;
 
-            clock_gettime(CLOCK_MONOTONIC, &start);
+            
 
         for (i = 0; i < size_transfer / sizeof(uint64_t); ++i) {
-            
+            clock_gettime(CLOCK_MONOTONIC, &start);
             uint32_t mram_64_bit_word_offset = apply_address_translation_on_mram_offset(i * 8 + offset) / 8;
             uint64_t next_data = BANK_OFFSET_NEXT_DATA(mram_64_bit_word_offset * sizeof(uint64_t));
             uint64_t offset = (next_data % BANK_CHUNK_SIZE) + (next_data / BANK_CHUNK_SIZE) * BANK_NEXT_CHUNK_OFFSET;
-                 
+            clock_gettime(CLOCK_MONOTONIC, &end);
+            
             for (ci_id = 0; ci_id < nb_cis; ++ci_id) {
                 if (xfer_matrix->ptr[idx + ci_id])
                     cache_line[ci_id] = *((uint64_t *)xfer_matrix->ptr[idx + ci_id] + i);
@@ -481,7 +482,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
             /// /// /// /// /// /// ///
         }
 
-         clock_gettime(CLOCK_MONOTONIC, &end);
+         
          elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
          printf("Temps d'exécution : %.10f secondes\n", elapsed);
 
