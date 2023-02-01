@@ -482,7 +482,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
         }
 
          clock_gettime(CLOCK_MONOTONIC, &end);
-         elapsed = ((end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) )/ (size_transfer / sizeof(uint64_t));
+         elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / (size_transfer / sizeof(uint64_t));
          printf("Temps d'exécution : %.10f secondes\n", elapsed);
 
         __builtin_ia32_mfence();
