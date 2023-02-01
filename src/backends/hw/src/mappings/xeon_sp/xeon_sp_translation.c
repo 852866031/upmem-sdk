@@ -24,6 +24,9 @@
 
 #include "static_verbose.h"
 
+#include <time.h>
+
+
 static struct verbose_control *this_vc;
 static struct verbose_control *
 __vc()
@@ -413,6 +416,8 @@ channel_id_to_pool_id(int channel_id)
 static void
 threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop)
 {
+    clock_t start = clock();
+
     struct dpu_transfer_matrix *xfer_matrix = xeon_sp_priv->xfer_matrix;
     uint64_t cache_line[NB_REAL_CIS];
     uint8_t idx, ci_id, dpu_id, nb_cis;
@@ -465,6 +470,10 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
          * cf. https://www.usenix.org/system/files/login/articles/login_summer17_07_rudoff.pdf
          */
     }
+
+    clock_t end = clock();
+    double time_elapsed = ((double)(end - start)) / CLOCKS_PER_SEC;
+    printf("TEMPS PASSÉ DANS WRITE TO RANK: %f secondes\n", time_elapsed);
 }
 
 static void
