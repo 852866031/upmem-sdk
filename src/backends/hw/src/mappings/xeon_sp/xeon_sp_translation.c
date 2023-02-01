@@ -466,17 +466,19 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
             uint64_t offset = (next_data % BANK_CHUNK_SIZE) + (next_data / BANK_CHUNK_SIZE) * BANK_NEXT_CHUNK_OFFSET;
             
             
-            clock_t start = clock();
             
             for (ci_id = 0; ci_id < nb_cis; ++ci_id) {
                 if (xfer_matrix->ptr[idx + ci_id])
                     cache_line[ci_id] = *((uint64_t *)xfer_matrix->ptr[idx + ci_id] + i);
             }
-            clock_t end = clock();
-            double time_elapsed = ((double)(end - start)) / CLOCKS_PER_SEC;
-            total+= time_elapsed;
+           
+            clock_t start = clock();
 
             byte_interleave_avx512(cache_line, (uint64_t *)((uint8_t *)ptr_dest + offset), true);
+            
+             clock_t end = clock();
+            double time_elapsed = ((double)(end - start)) / CLOCKS_PER_SEC;
+            total+= time_elapsed;
             //byte_interleave_avx2(cache_line, (uint64_t *)((uint8_t *)ptr_dest + offset));
             /// /// /// /// /// /// ///
         }
