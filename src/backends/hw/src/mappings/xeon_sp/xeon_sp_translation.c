@@ -478,7 +478,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
             //byte_interleave_avx2(cache_line, (uint64_t *)((uint8_t *)ptr_dest + offset));
             /// /// /// /// /// /// ///
         }
-        printf("TEMPS PASSÉ DANS TRANSFERT: %f secondes\n", total / ( size_transfer / sizeof(uint64_t)));
+        printf("TEMPS PASSÉ DANS TRANSFERT: %.10f secondes\n", total / ( size_transfer / sizeof(uint64_t)));
 
         __builtin_ia32_mfence();
 
