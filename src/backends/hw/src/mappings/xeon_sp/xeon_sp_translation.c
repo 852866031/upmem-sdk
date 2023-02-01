@@ -482,9 +482,6 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
             //byte_interleave_avx2(cache_line, (uint64_t *)((uint8_t *)ptr_dest + offset));
             /// /// /// /// /// /// ///
         }
-           clock_t end = clock();
-            double time_elapsed = ((double)(end - start)) / CLOCKS_PER_SEC;
-            total+= time_elapsed;
         printf("TEMPS PASSÉ DANS TRANSFERT: %.10f secondes\n", total);
 
         __builtin_ia32_mfence();
