@@ -421,7 +421,7 @@ channel_id_to_pool_id(int channel_id)
 static void
 threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop)
 {
-    clock_t start = clock();
+    
 
     struct dpu_transfer_matrix *xfer_matrix = xeon_sp_priv->xfer_matrix;
     uint64_t cache_line[NB_REAL_CIS];
@@ -434,15 +434,16 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
     if (!size_transfer)
         return;
     
-    clock_t end = clock();
-    double time_elapsed = ((double)(end - start)) / CLOCKS_PER_SEC;
-    printf("TEMPS PASSÉ DANS WRITE TO RANK: %f secondes\n", time_elapsed);
+  
     /* Works only for transfers:
      * - of same size and same offset on the same line
      * - size and offset are aligned on 8B
      */
     FOREACH_DPU_MULTITHREAD(dpu_id, idx, dpu_id_start, dpu_id_stop)
     {
+        clock_t start = clock();
+
+
         uint32_t i;
         uint8_t *ptr_dest = (uint8_t *)xeon_sp_priv->base_region_addr + BANK_START(dpu_id);
         bool do_dpu_transfer = false;
@@ -453,7 +454,11 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
                 break;
             }
         }
+          clock_t end = clock();
+          double time_elapsed = ((double)(end - start)) / CLOCKS_PER_SEC;
+          printf("TEMPS PASSÉ DANS WRITE TO RANK: %f secondes\n", time_elapsed);
 
+          
         if (!do_dpu_transfer)
             continue;
 
