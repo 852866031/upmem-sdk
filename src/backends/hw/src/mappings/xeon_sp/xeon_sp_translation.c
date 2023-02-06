@@ -456,8 +456,8 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
         if (!do_dpu_transfer)
             continue;
 
-         struct timespec start, end;
-         double elapsed;
+         //struct timespec start, end;
+         //double elapsed;
 
             
 
@@ -473,17 +473,17 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
             }
             
             
-            clock_gettime(CLOCK_MONOTONIC, &start);
+            //clock_gettime(CLOCK_MONOTONIC, &start);
             byte_interleave_avx512(cache_line, (uint64_t *)((uint8_t *)ptr_dest + offset), true);
-            clock_gettime(CLOCK_MONOTONIC, &end);
+            //clock_gettime(CLOCK_MONOTONIC, &end);
           
             //byte_interleave_avx2(cache_line, (uint64_t *)((uint8_t *)ptr_dest + offset));
             /// /// /// /// /// /// ///
         }
 
          
-         elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-         printf("Temps d'exécution : %.10f secondes\n", elapsed);
+         //elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+         //printf("Temps d'exécution : %.10f secondes\n", elapsed);
 
         __builtin_ia32_mfence();
 
