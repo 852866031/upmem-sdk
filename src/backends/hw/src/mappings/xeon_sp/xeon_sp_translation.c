@@ -424,8 +424,6 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
     
 struct timespec start, end;
 double elapsed;
-            clock_gettime(CLOCK_MONOTONIC, &start);
-
 
     struct dpu_transfer_matrix *xfer_matrix = xeon_sp_priv->xfer_matrix;
     uint64_t cache_line[NB_REAL_CIS];
@@ -443,6 +441,8 @@ double elapsed;
      * - of same size and same offset on the same line
      * - size and offset are aligned on 8B
      */
+    clock_gettime(CLOCK_MONOTONIC, &start);
+
     FOREACH_DPU_MULTITHREAD(dpu_id, idx, dpu_id_start, dpu_id_stop)
     {
         uint32_t i;
