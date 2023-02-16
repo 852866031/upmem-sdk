@@ -424,6 +424,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
     
 struct timespec start, end;
 double elapsed;
+            clock_gettime(CLOCK_MONOTONIC, &start);
 
 
     struct dpu_transfer_matrix *xfer_matrix = xeon_sp_priv->xfer_matrix;
@@ -476,11 +477,8 @@ double elapsed;
                     cache_line[ci_id] = *((uint64_t *)xfer_matrix->ptr[idx + ci_id] + i);
             }
             
-            clock_gettime(CLOCK_MONOTONIC, &start);
             byte_interleave_avx512(cache_line, (uint64_t *)((uint8_t *)ptr_dest + offset), true);
-            clock_gettime(CLOCK_MONOTONIC, &end);
-           elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-         printf("Temps d'exécution avx : %.10f secondes\n", elapsed);  
+           
             //byte_interleave_avx2(cache_line, (uint64_t *)((uint8_t *)ptr_dest + offset));
             /// /// /// /// /// /// ///
         }
@@ -499,7 +497,9 @@ double elapsed;
     }
 
         //clock_gettime(CLOCK_MONOTONIC, &end);
-        
+         clock_gettime(CLOCK_MONOTONIC, &end);
+           elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+         printf("Temps d'exécution avx : %.10f secondes\n", elapsed);  
 }
 
 static void
