@@ -421,10 +421,6 @@ channel_id_to_pool_id(int channel_id)
 static void
 threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop)
 {
-    
-struct timespec start, end;
-double elapsed;
-
     struct dpu_transfer_matrix *xfer_matrix = xeon_sp_priv->xfer_matrix;
     uint64_t cache_line[NB_REAL_CIS];
     uint8_t idx, ci_id, dpu_id, nb_cis;
@@ -476,9 +472,7 @@ double elapsed;
                     cache_line[ci_id] = *((uint64_t *)xfer_matrix->ptr[idx + ci_id] + i);
             }
                             
-clock_gettime(CLOCK_MONOTONIC, &start);
             byte_interleave_avx512(cache_line, (uint64_t *)((uint8_t *)ptr_dest + offset), true);
-           clock_gettime(CLOCK_MONOTONIC, &end);   
             //byte_interleave_avx2(cache_line, (uint64_t *)((uint8_t *)ptr_dest + offset));
             /// /// /// /// /// /// ///
         }
@@ -497,9 +491,6 @@ clock_gettime(CLOCK_MONOTONIC, &start);
     }
 
         //clock_gettime(CLOCK_MONOTONIC, &end);
-
-           elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-         printf("Temps d'exécution av : %.10f secondes\n", elapsed);  
 }
 
 static void
