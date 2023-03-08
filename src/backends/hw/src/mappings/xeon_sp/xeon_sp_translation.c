@@ -497,7 +497,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
         //clock_gettime(CLOCK_MONOTONIC, &end);
           clock_gettime(CLOCK_MONOTONIC, &end);
         elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-       printf("Temps d'exécution read from rank : %.10f secondes\n", elapsed);
+       printf("Temps d'exécution write to rank rank : %.10f secondes\n", elapsed);
 }
 
 static void
