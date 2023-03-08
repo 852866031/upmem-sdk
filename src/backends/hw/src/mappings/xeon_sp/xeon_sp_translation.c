@@ -421,6 +421,9 @@ channel_id_to_pool_id(int channel_id)
 static void
 threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop)
 {
+      struct timespec start, end;
+    double elapsed;
+    clock_gettime(CLOCK_MONOTONIC, &start);
     printf("THIS IS A THREAD WRITE \n");
     struct dpu_transfer_matrix *xfer_matrix = xeon_sp_priv->xfer_matrix;
     uint64_t cache_line[NB_REAL_CIS];
@@ -492,14 +495,17 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
     }
 
         //clock_gettime(CLOCK_MONOTONIC, &end);
+          clock_gettime(CLOCK_MONOTONIC, &end);
+        elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+       printf("Temps d'exécution read from rank : %.10f secondes\n", elapsed);
 }
 
 static void
 threads_read_from_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop)
 {
-    //struct timespec start, end;
-    //double elapsed;
-    //clock_gettime(CLOCK_MONOTONIC, &start);
+    struct timespec start, end;
+    double elapsed;
+    clock_gettime(CLOCK_MONOTONIC, &start);
     printf("THIS IS A THREAD READ \n");
 
     struct dpu_transfer_matrix *xfer_matrix = xeon_sp_priv->xfer_matrix;
@@ -579,9 +585,9 @@ threads_read_from_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_star
 
         __builtin_ia32_mfence();
     }
-      // clock_gettime(CLOCK_MONOTONIC, &end);
-      //  elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-      //   printf("Temps d'exécution read from rank : %.10f secondes\n", elapsed);
+       clock_gettime(CLOCK_MONOTONIC, &end);
+        elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+       printf("Temps d'exécution read from rank : %.10f secondes\n", elapsed);
 }
 
 static void
