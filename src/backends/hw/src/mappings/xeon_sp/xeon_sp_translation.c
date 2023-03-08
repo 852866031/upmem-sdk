@@ -421,7 +421,7 @@ channel_id_to_pool_id(int channel_id)
 static void
 threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop)
 {
-    printf("THIS IS A THREAD WRITE ");
+    printf("THIS IS A THREAD WRITE \n");
     struct dpu_transfer_matrix *xfer_matrix = xeon_sp_priv->xfer_matrix;
     uint64_t cache_line[NB_REAL_CIS];
     uint8_t idx, ci_id, dpu_id, nb_cis;
@@ -500,7 +500,7 @@ threads_read_from_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_star
     //struct timespec start, end;
     //double elapsed;
     //clock_gettime(CLOCK_MONOTONIC, &start);
-    printf("THIS IS A THREAD READ ");
+    printf("THIS IS A THREAD READ \n");
 
     struct dpu_transfer_matrix *xfer_matrix = xeon_sp_priv->xfer_matrix;
     uint64_t cache_line[NB_REAL_CIS], cache_line_interleave[NB_REAL_CIS];
