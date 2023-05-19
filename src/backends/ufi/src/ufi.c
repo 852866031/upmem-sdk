@@ -115,7 +115,6 @@ __API_SYMBOL__ u32 ufi_bit_config(struct dpu_rank_t *rank, u8 ci_mask,
 	}
 
 end:
-	//printf("ufi_bit_config status: %d\n",status);
 	return status;
 }
 
@@ -133,17 +132,16 @@ __API_SYMBOL__ u32 ufi_identity(struct dpu_rank_t *rank, u8 ci_mask,
 	struct dpu_bit_config *bit_config =
 		&(GET_DESC_HW(rank)->dpu.pcb_transformation);
 	u8 each_ci;
-	//printf("DDDDDDDDDDDDDD : 1 GET CMDS, NB CIS (%d), AND BIT CONFIG \n",nr_cis);
+
 	ci_prepare_mask(cmds, ci_mask, CI_IDENTITY);
-	//printf("DDDDDDDDDDDDDD : 2 DONE CI PREPARE MASK \n");
 	FF(ci_exec_32bit_cmd(rank, cmds, results));
-	//printf("DDDDDDDDDDDDDD : 3 DONE CI EXEC 32 BITS CMD WITH STATUS %d \n", status);
+
 	/* No shuffling boxes, so the result must be software-shuffled */
 	for_each_ci (each_ci, nr_cis, ci_mask) {
 		results[each_ci] =
 			dpu_bit_config_cpu2dpu(bit_config, results[each_ci]);
 	}
-	//printf("DDDDDDDDDDDDDD : 4 DONE DPU BIT CONFIG CPU2DPU CONFIGURATION \n");
+
 end:
 	return status;
 }

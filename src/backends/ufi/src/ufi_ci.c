@@ -32,39 +32,23 @@ determine_if_commands_are_finished(struct dpu_rank_t *rank, const u64 *data,
 
 static void log_temperature(struct dpu_rank_t *rank, u64 *results);
 
-/*static void print_cis(u64 *commands){
-	int i;
-	for(i=0; i<DPU_MAX_NR_CIS; i++){
-		LOG_FN(
-		WARNING,
-		"%lu",
-		commands[i]);	
-	}
-	LOG_FN(
-		WARNING,
-		"\n");
-	
-}*/
-
 __API_SYMBOL__ u32 ci_commit_commands(struct dpu_rank_t *rank, u64 *commands)
 {
 	struct dpu_rank_handler *handler = GET_HANDLER(rank);
 	u32 ret;
 
-	//LOGV_PACKET(rank, commands, WRITE_DIR);
+	LOGV_PACKET(rank, commands, WRITE_DIR);
 
 	ret = debug_record_last_cmd(rank, WRITE_DIR, commands);
 	if (ret != DPU_OK)
 		return ret;
-	//LOG_FN(WARNING,"WRITE \n");
-	//print_cis(commands);
+
 	if (handler->commit_commands(rank, commands) != DPU_RANK_SUCCESS) {
 		return DPU_ERR_DRIVER;
 	}
 
 	return DPU_OK;
 }
-
 
 __API_SYMBOL__ u32 ci_update_commands(struct dpu_rank_t *rank, u64 *commands)
 {
@@ -74,8 +58,7 @@ __API_SYMBOL__ u32 ci_update_commands(struct dpu_rank_t *rank, u64 *commands)
 	if (handler->update_commands(rank, commands) != DPU_RANK_SUCCESS) {
 		return DPU_ERR_DRIVER;
 	}
-	//LOG_FN(WARNING,"READ \n");
-	//print_cis(commands);
+
 	ret = debug_record_last_cmd(rank, READ_DIR, commands);
 	if (ret != DPU_OK)
 		return ret;
@@ -160,16 +143,14 @@ __API_SYMBOL__ u32 ci_exec_32bit_cmd(struct dpu_rank_t *rank, u64 *commands,
 	u8 nr_cis = GET_DESC_HW(rank)->topology.nr_of_control_interfaces;
 	u8 each_ci;
 	u32 status;
-	//printf("CICICICICICICI: BEFORE EXEC COMMAND 32BITS\n");
+
 	if ((status = exec_cmd(rank, commands, false)) != DPU_OK) {
-		printf("CICICICICICICI: FAILED TO EXEC CMD WITH STATUS : %d\n", status);
 		return status;
 	}
-	//printf("CICICICICICICI: DONE CI EXEC 32 BITS EXEC COMMAND 32BITS\n");
+
 	for (each_ci = 0; each_ci < nr_cis; ++each_ci) {
 		if (commands[each_ci] != CI_EMPTY) {
 			results[each_ci] = rank->data[each_ci];
-			//printf("%lu \n", rank->data[each_ci]);
 		}
 	}
 
@@ -306,29 +287,17 @@ static u32 exec_cmd(struct dpu_rank_t *rank, u64 *commands,
 	invert_color(rank, ci_mask);
 
 	if ((status = ci_commit_commands(rank, commands)) != DPU_OK) {
-		LOG_RANK(WARNING, rank,"exec_cmd: error commit commands, status: %d\n",status);
-		//print_cis(commands);
 		return status;
 	}
-	
-	//printf("[GUEST SDK] exec_cmd: just committed commands with status : %d\n",status);
-	//LOG_RANK(WARNING, rank, "[GUEST SDK] exec_cmd: just committed commands with status : %d\n",status);
-	//LOG_RANK(WARNING, rank, "Write\n");
-	//print_cis(commands);
+
 	do {
-		
 		if ((status = ci_update_commands(rank, data)) != DPU_OK) {
-			LOG_RANK(WARNING, rank, "exec_cmd: error update commands, status: %d\n",status);
 			return status;
 		}
-		//LOG_RANK(WARNING, rank, "[GUEST SDK] exec_cmd: just updated commands with status: %d\n",status);
-		//LOG_RANK(WARNING, rank, "Read\n");
-		//print_cis(data);
-		//printf("exec_cmd: update commands: %d\n",status);
+
 		in_progress = !determine_if_commands_are_finished(
 			rank, data, expected, result_masks, expected_color,
 			is_done);
-		//printf("exec_cmd: DO WHILE LOOP (EXEC_CMD) PROGRESS : %d TIMEOUT %d NB_RETRIES %d \n", in_progress, timeout,nr_retries);
 		timeout = (nr_retries--) == 0;
 	} while (in_progress && !timeout);
 
@@ -354,7 +323,7 @@ static u32 exec_cmd(struct dpu_rank_t *rank, u64 *commands,
 		return status;
 	}
 
-	//LOGV_PACKET(rank, data, READ_DIR); PUT IT BACK LATER
+	LOGV_PACKET(rank, data, READ_DIR);
 
 	log_temperature(rank, data);
 
@@ -466,11 +435,9 @@ static bool determine_if_commands_are_finished(struct dpu_rank_t *rank,
 			u64 result = data[each_ci];
 
 			/* The second case can happen when the debugger has restored the result */
-			if ((result & result_masks[each_ci]) != expected[each_ci] && (result & CI_NOP) != CI_NOP) {
-				//printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE OF RESULT & RESULT MASK OR CI_NOP : cond 1 : %d ; cond 2 : %d\n", (result & result_masks[each_ci]) !=
-				//    expected[each_ci],(result & CI_NOP) != CI_NOP );
-				//LOG_RANK(WARNING, rank, "DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE OF RESULT & RESULT MASK OR CI_NOP : cond 1 : %d ; cond 2 : %d\n", (result & result_masks[each_ci]) !=
-				//    expected[each_ci],(result & CI_NOP) != CI_NOP );
+			if ((result & result_masks[each_ci]) !=
+				    expected[each_ci] &&
+			    (result & CI_NOP) != CI_NOP) {
 				return false;
 			}
 
@@ -482,14 +449,10 @@ static bool determine_if_commands_are_finished(struct dpu_rank_t *rank,
 
 			if (ci_color != 0) {
 				if (nb_bits_set <= 3) {
-					//LOG_RANK(WARNING, rank,"DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE CI_COLOR != 0 AND NB BIT SET < 3 \n" );
-					//printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE CI_COLOR != 0 AND NB BIT SET < 3 \n" );
 					return false;
 				}
 			} else {
 				if (nb_bits_set >= 5) {
-					//LOG_RANK(WARNING, rank,"DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE CI_COLOR ==0 AND NB BIT SET > 5 \n");
-					//printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE CI_COLOR ==0 AND NB BIT SET > 5 \n" );
 					return false;
 				}
 			}
@@ -507,13 +470,11 @@ static bool determine_if_commands_are_finished(struct dpu_rank_t *rank,
 			case 1:
 				LOG_CI(VERBOSE, rank, each_ci,
 				       "command decoding error detected");
-				//printf("DDDDDDDDDDD: command decoding error detected \n" );
 				context->fault_decode |= ci_mask;
 				break;
 			case 2:
 				LOG_CI(VERBOSE, rank, each_ci,
 				       "command collision detected");
-				//printf("DDDDDDDDDDD: command decoding error detected \n" );
 				context->fault_collide |= ci_mask;
 				break;
 			case 3:
@@ -523,22 +484,19 @@ static bool determine_if_commands_are_finished(struct dpu_rank_t *rank,
 				LOG_CI(VERBOSE, rank, each_ci,
 				       "command decoding error detected");
 				context->fault_decode |= ci_mask;
-				//printf("DDDDDDDDDDD: command decoding error detected and collision\n" );
 				break;
 			default:
 				LOG_CI(DEBUG, rank, each_ci,
 				       "Number of bits set (%u) is inconsistent."
 				       "Mark the result as not ready.",
 				       nb_bits_set);
-					//printf("DDDDDDDDDDD: IN_PROGRESS FAILS BECAUSE NB BITS SENT ARE INCONSISTENT \n" );
 				return false;
 			}
 
 			is_done[each_ci] = true;
 		}
 	}
-	//LOG_RANK(WARNING, rank,"DDDDDDDDDDD: IN_PROGRESS SUCCEEDS \n\n" );
-	//printf("DDDDDDDDDDD: IN_PROGRESS SUCCEEDS \n\n" );
+
 	return true;
 }
 
