@@ -379,12 +379,12 @@ static inline uint8_t count_nr_of_faulty_bits(uint64_t data)
 
 static inline uint8_t find_index_of_first_faulty_bit(uint64_t data)
 {
-	return __builtin_ctz(data);
+	return __builtin_ctzll(data);
 }
 
 static inline uint8_t find_index_of_last_faulty_bit(uint64_t data)
 {
-	return 63 - __builtin_clz(data);
+	return 63 - __builtin_clzll(data);
 }
 
 static bool
