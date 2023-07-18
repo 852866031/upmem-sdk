@@ -526,8 +526,8 @@ threads_read_from_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_star
             cache_line[6] = *((volatile uint64_t *)((uint8_t *)ptr_dest + offset + 6 * sizeof(uint64_t)));
             cache_line[7] = *((volatile uint64_t *)((uint8_t *)ptr_dest + offset + 7 * sizeof(uint64_t)));
 
-            byte_interleave_avx2(cache_line, cache_line_interleave);
-
+            //byte_interleave_avx2(cache_line, cache_line_interleave);
+            byte_interleave_avx512(cache_line, cache_line_interleave, false);
             for (ci_id = 0; ci_id < nb_cis; ++ci_id) {
                 if (xfer_matrix->ptr[idx + ci_id]) {
                     *((uint64_t *)xfer_matrix->ptr[idx + ci_id] + i) = cache_line_interleave[ci_id];
