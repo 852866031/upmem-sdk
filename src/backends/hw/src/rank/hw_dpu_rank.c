@@ -406,11 +406,13 @@ get_byte_order(struct dpu_rank_t *rank, hw_dpu_rank_allocation_parameters_t para
 static dpu_rank_status_e
 hw_allocate(struct dpu_rank_t *rank, dpu_description_t description)
 {
+    
     dpu_rank_status_e status;
     hw_dpu_rank_allocation_parameters_t params = _this_params(description);
     hw_dpu_rank_context_t rank_context;
     int ret;
     uint8_t nr_cis;
+     printf("WE USE THIS MODE AT TO ALLOC %d", params->mode);
 
     /* 1/ Make sure SDK is compatible with the kernel module */
     static bool compatibility_checked = false;
@@ -472,6 +474,7 @@ hw_allocate(struct dpu_rank_t *rank, dpu_description_t description)
         goto free_rank_context;
 
     if (params->mode == DPU_REGION_MODE_SAFE) {
+     printf("WE USE SAFE TO ALLOC %d", params->mode);
         rank_context->control_interfaces = malloc(nr_cis * sizeof(uint64_t));
         if (!rank_context->control_interfaces) {
             LOG_RANK(WARNING, rank, "Failed to allocate memory for control interfaces %u", params->dpu_chip_id);
@@ -481,6 +484,7 @@ hw_allocate(struct dpu_rank_t *rank, dpu_description_t description)
 
     } else if (params->mode == DPU_REGION_MODE_PERF || params->mode == DPU_REGION_MODE_HYBRID) {
         /* 4/ Retrieve interleaving infos */
+         printf("WE USE PERF %d", params->mode);
         if (!fill_dpu_region_interleaving_values(description)) {
             LOG_RANK(WARNING, rank, "Failed to retrieve interleaving info");
             status = DPU_RANK_SYSTEM_ERROR;
@@ -522,6 +526,7 @@ hw_allocate(struct dpu_rank_t *rank, dpu_description_t description)
         }
 
         if (params->mode == DPU_REGION_MODE_PERF) {
+            printf("WE USE PERF %d", params->mode);
             /* 6/ Mmap the whole physical region */
             params->region_size = dpu_sysfs_get_region_size(&params->rank_fs);
 
