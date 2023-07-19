@@ -24,9 +24,6 @@
 
 #include "static_verbose.h"
 
-#include <time.h>
-
-
 static struct verbose_control *this_vc;
 static struct verbose_control *
 __vc()
@@ -269,8 +266,6 @@ xeon_sp_write_to_cis(__attribute__((unused)) struct dpu_region_address_translati
     ci_address = (uint64_t *)((uint8_t *)base_region_addr + 0x20000);
 
     byte_interleave_avx512(block_data, ci_address, true);
-    ///// ///// ///// ///// ///// ///// /////
-    //byte_interleave_avx2(block_data, ci_address);
 
     tr->one_read = false;
 }
@@ -316,9 +311,6 @@ xeon_sp_read_from_cis(__attribute__((unused)) struct dpu_region_address_translat
      * packet->data is not cached by this access./
      */
     byte_interleave_avx512(input, block_data, false);
-    
-    //byte_interleave_avx2(input, block_data);
-     /// /// /// /// /// /// ///
 
     tr->one_read = true;
 }
@@ -435,55 +427,39 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
 
     if (!size_transfer)
         return;
-    
-  
+
     /* Works only for transfers:
      * - of same size and same offset on the same line
      * - size and offset are aligned on 8B
      */
-
     FOREACH_DPU_MULTITHREAD(dpu_id, idx, dpu_id_start, dpu_id_stop)
     {
         uint32_t i;
         uint8_t *ptr_dest = (uint8_t *)xeon_sp_priv->base_region_addr + BANK_START(dpu_id);
         bool do_dpu_transfer = false;
+
         for (ci_id = 0; ci_id < nb_cis; ++ci_id) {
             if (xfer_matrix->ptr[idx + ci_id]) {
                 do_dpu_transfer = true;
                 break;
             }
         }
-        
 
         if (!do_dpu_transfer)
             continue;
 
-         //struct timespec start, end;
-         //double elapsed;
-
-            
-
         for (i = 0; i < size_transfer / sizeof(uint64_t); ++i) {
-                
-
             uint32_t mram_64_bit_word_offset = apply_address_translation_on_mram_offset(i * 8 + offset) / 8;
             uint64_t next_data = BANK_OFFSET_NEXT_DATA(mram_64_bit_word_offset * sizeof(uint64_t));
             uint64_t offset = (next_data % BANK_CHUNK_SIZE) + (next_data / BANK_CHUNK_SIZE) * BANK_NEXT_CHUNK_OFFSET;
-           
 
             for (ci_id = 0; ci_id < nb_cis; ++ci_id) {
                 if (xfer_matrix->ptr[idx + ci_id])
                     cache_line[ci_id] = *((uint64_t *)xfer_matrix->ptr[idx + ci_id] + i);
             }
-                            
-            byte_interleave_avx512(cache_line, (uint64_t *)((uint8_t *)ptr_dest + offset), true);
-            //byte_interleave_avx2(cache_line, (uint64_t *)((uint8_t *)ptr_dest + offset));
-            /// /// /// /// /// /// ///
-        }
 
-         
-         //elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-         //printf("Temps d'exécution : %.10f secondes\n", elapsed);
+            byte_interleave_avx512(cache_line, (uint64_t *)((uint8_t *)ptr_dest + offset), true);
+        }
 
         __builtin_ia32_mfence();
 
@@ -503,11 +479,6 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
 static void
 threads_read_from_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop)
 {
-    /* struct timespec start, end;
-    double elapsed;
-    clock_gettime(CLOCK_MONOTONIC, &start);
-    printf("THIS IS A THREAD READ \n");
- */
     struct dpu_transfer_matrix *xfer_matrix = xeon_sp_priv->xfer_matrix;
     uint64_t cache_line[NB_REAL_CIS], cache_line_interleave[NB_REAL_CIS];
     uint8_t idx, ci_id, dpu_id, nb_cis;
@@ -564,8 +535,8 @@ threads_read_from_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_star
             cache_line[6] = *((volatile uint64_t *)((uint8_t *)ptr_dest + offset + 6 * sizeof(uint64_t)));
             cache_line[7] = *((volatile uint64_t *)((uint8_t *)ptr_dest + offset + 7 * sizeof(uint64_t)));
 
-            byte_interleave_avx2(cache_line, cache_line_interleave);
-
+            //byte_interleave_avx2(cache_line, cache_line_interleave);
+            byte_interleave_avx512(cache_line, cache_line_interleave, false);
             for (ci_id = 0; ci_id < nb_cis; ++ci_id) {
                 if (xfer_matrix->ptr[idx + ci_id]) {
                     *((uint64_t *)xfer_matrix->ptr[idx + ci_id] + i) = cache_line_interleave[ci_id];
@@ -585,9 +556,6 @@ threads_read_from_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_star
 
         __builtin_ia32_mfence();
     }
-/*        clock_gettime(CLOCK_MONOTONIC, &end);
-        elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-       printf("Temps d'exécution read from rank : %.10f secondes\n", elapsed); */
 }
 
 static void
@@ -742,7 +710,7 @@ get_default_xfer_thread_configuration()
 {
     static const struct dpu_transfer_thread_configuration *conf = NULL;
     static const struct dpu_transfer_thread_configuration default_xfer_thread_configuration = {
-        .nb_thread_per_pool = 8,
+        .nb_thread_per_pool = 4,
         .threshold_1_thread = 1024,
         .threshold_2_threads = 2048,
         .threshold_4_threads = 32 * 1024,

@@ -411,6 +411,7 @@ hw_allocate(struct dpu_rank_t *rank, dpu_description_t description)
     hw_dpu_rank_context_t rank_context;
     int ret;
     uint8_t nr_cis;
+
     /* 1/ Make sure SDK is compatible with the kernel module */
     static bool compatibility_checked = false;
     if ((params->bypass_module_compatibility == false) && (compatibility_checked == false)) {
@@ -420,6 +421,7 @@ hw_allocate(struct dpu_rank_t *rank, dpu_description_t description)
         }
         compatibility_checked = true;
     }
+
     /* 2/ Find an available rank whose mode is compatible with the one asked
      * by the user.
      * TODO: Maybe user wants to have a specific dpu_chip_id passed as argument,
@@ -434,6 +436,7 @@ hw_allocate(struct dpu_rank_t *rank, dpu_description_t description)
         status = DPU_RANK_SYSTEM_ERROR;
         goto end;
     }
+
     rank->rank_id = (rank->rank_id & ~DPU_TARGET_MASK) | dpu_sysfs_get_rank_id(&params->rank_fs);
     rank->numa_node = dpu_sysfs_get_numa_node(&params->rank_fs);
     params->channel_id = dpu_sysfs_get_channel_id(&params->rank_fs);
@@ -443,9 +446,11 @@ hw_allocate(struct dpu_rank_t *rank, dpu_description_t description)
         status = DPU_RANK_SYSTEM_ERROR;
         goto free_physical_rank;
     }
+
     rank->_internals = rank_context;
 
     params->dpu_chip_id = dpu_sysfs_get_dpu_chip_id(&params->rank_fs);
+
     if (params->dpu_chip_id != description->hw.signature.chip_id) {
         LOG_RANK(
             WARNING, rank, "Unexpected chip id %u (description is %u)", params->dpu_chip_id, description->hw.signature.chip_id);
@@ -612,7 +617,7 @@ hw_commit_commands(struct dpu_rank_t *rank, dpu_rank_buffer_t buffer)
     hw_dpu_rank_allocation_parameters_t params = _this_params(rank->description);
     dpu_rank_buffer_t ptr_buffer = buffer;
     int ret;
-    //int i;
+
     switch (params->mode) {
         case DPU_REGION_MODE_PERF:
             params->translate.write_to_cis(&params->translate,
@@ -652,6 +657,7 @@ hw_update_commands(struct dpu_rank_t *rank, dpu_rank_buffer_t buffer)
     hw_dpu_rank_allocation_parameters_t params = _this_params(rank->description);
     dpu_rank_buffer_t ptr_buffer = buffer;
     int ret;
+
     switch (params->mode) {
         case DPU_REGION_MODE_PERF:
             params->translate.read_from_cis(&params->translate,
@@ -676,6 +682,7 @@ hw_update_commands(struct dpu_rank_t *rank, dpu_rank_buffer_t buffer)
                 LOG_RANK(WARNING, rank, "%s", strerror(errno));
                 return DPU_RANK_SYSTEM_ERROR;
             }
+
             break;
         default:
             return DPU_RANK_SYSTEM_ERROR;
@@ -690,6 +697,7 @@ hw_copy_to_rank(struct dpu_rank_t *rank, struct dpu_transfer_matrix *transfer_ma
     hw_dpu_rank_allocation_parameters_t params = _this_params(rank->description);
     struct dpu_transfer_matrix *ptr_transfer_matrix = transfer_matrix;
     int ret;
+
     switch (params->mode) {
         case DPU_REGION_MODE_PERF:
             params->translate.write_to_rank(&params->translate, params->ptr_region, params->channel_id, ptr_transfer_matrix);
@@ -723,10 +731,11 @@ hw_copy_from_rank(struct dpu_rank_t *rank, struct dpu_transfer_matrix *transfer_
     hw_dpu_rank_allocation_parameters_t params = _this_params(rank->description);
     struct dpu_transfer_matrix *ptr_transfer_matrix = transfer_matrix;
     int ret;
+
     switch (params->mode) {
         case DPU_REGION_MODE_PERF:
-            //LOG_FN(WARNING, "perf mode");
             params->translate.read_from_rank(&params->translate, params->ptr_region, params->channel_id, ptr_transfer_matrix);
+
             break;
         case DPU_REGION_MODE_HYBRID:
             if ((params->translate.capabilities & CAP_HYBRID_CONTROL_INTERFACE) == 0) {
@@ -736,7 +745,6 @@ hw_copy_from_rank(struct dpu_rank_t *rank, struct dpu_transfer_matrix *transfer_
             }
             /* fall through */
         case DPU_REGION_MODE_SAFE:
-            //LOG_FN(WARNING, "safe mode");
             ret = ioctl(params->rank_fs.fd_rank, DPU_RANK_IOCTL_READ_FROM_RANK, ptr_transfer_matrix);
             if (ret) {
                 LOG_RANK(WARNING, rank, "%s", strerror(errno));
@@ -747,6 +755,7 @@ hw_copy_from_rank(struct dpu_rank_t *rank, struct dpu_transfer_matrix *transfer_
         default:
             return DPU_RANK_SYSTEM_ERROR;
     }
+
     return DPU_RANK_SUCCESS;
 }
 
@@ -853,10 +862,7 @@ hw_fill_description_from_profile(dpu_properties_t properties, dpu_description_t 
         strcpy(parameters->rank_fs.rank_path, rank_path);
         free(rank_path);
     }
-    if(region_mode_input==0){
-        LOG_FN(DEBUG, "region_mode_input: %s", region_mode_input);
-    }
-    
+
     if (region_mode_input) {
         if (!strcmp(region_mode_input, "safe"))
             parameters->mode = (uint8_t)DPU_REGION_MODE_SAFE;
@@ -875,7 +881,6 @@ hw_fill_description_from_profile(dpu_properties_t properties, dpu_description_t 
         free(region_mode_input);
     } else {
         LOG_FN(DEBUG, "Region mode not specified, switching to default (%s)", (capabilities_mode & CAP_PERF) ? "perf" : "safe");
-        LOG_FN(DEBUG, "This is a test");
         parameters->mode = (capabilities_mode & CAP_PERF) ? (uint8_t)DPU_REGION_MODE_PERF : (uint8_t)DPU_REGION_MODE_SAFE;
     }
 

@@ -340,10 +340,10 @@ dpu_rank_handler_get_rank(struct dpu_rank_t *rank, dpu_rank_handler_context_t ha
 __API_SYMBOL__ void
 dpu_rank_handler_free_rank(struct dpu_rank_t *rank, dpu_rank_handler_context_t handler_context)
 {
-    //printf("######################## %d\n", handler_context->handler_refcount);
     dpu_lock_rank(rank);
 
     dpu_rank_list_remove(rank);
+
     handler_context->handler->free(rank);
     dpu_release_rank_id(rank->rank_handler_allocator_id);
     dpu_free_description(rank->description);

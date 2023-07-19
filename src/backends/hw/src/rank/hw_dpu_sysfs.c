@@ -182,14 +182,14 @@ dpu_sysfs_try_to_allocate_rank(const char *dev_rank_path, struct dpu_rank_fs *ra
 {
     struct udev_list_entry *dev_dax_list_entry;
     uint64_t capabilities;
-    
+
     /* Whatever the mode, we keep an fd to dpu_rank so that
      * we have infos about how/who uses the rank
      */
     rank_fs->fd_rank = open(dev_rank_path, O_RDWR);
     if (rank_fs->fd_rank < 0)
         return -errno;
-    
+
     /* udev_device_get_parent does not take a reference as stated in header */
     rank_fs->udev_parent.dev = udev_device_get_parent(rank_fs->udev.dev);
 
@@ -207,6 +207,7 @@ dpu_sysfs_try_to_allocate_rank(const char *dev_rank_path, struct dpu_rank_fs *ra
             rank_fs->udev_parent.dev,
             rank_fs->udev_dax.devices,
             err);
+
         udev_list_entry_foreach(dev_dax_list_entry, rank_fs->udev_dax.devices)
         {
             const char *path_dax, *dev_dax_path;
@@ -222,6 +223,7 @@ dpu_sysfs_try_to_allocate_rank(const char *dev_rank_path, struct dpu_rank_fs *ra
             LOG_FN(WARNING, "Error (%d: '%s') opening dax device '%s'", errno, strerror(errno), dev_dax_path);
             udev_device_unref(rank_fs->udev_dax.dev);
         }
+
         udev_enumerate_unref(rank_fs->udev_dax.enumerate);
         udev_unref(rank_fs->udev_dax.udev);
     } else
@@ -285,17 +287,19 @@ dpu_sysfs_get_available_rank(const char *rank_path, struct dpu_rank_fs *rank_fs)
 {
     struct udev_list_entry *dev_rank_list_entry;
     int eacces_count = 0;
+
     init_udev_enumerator(rank_fs->udev.enumerate, rank_fs->udev.udev, NULL, "dpu_rank", NULL, rank_fs->udev.devices, end);
 
     udev_list_entry_foreach(dev_rank_list_entry, rank_fs->udev.devices)
     {
         const char *path_rank, *dev_rank_path;
+
         path_rank = udev_list_entry_get_name(dev_rank_list_entry);
         rank_fs->udev.dev = udev_device_new_from_syspath(rank_fs->udev.udev, path_rank);
         dev_rank_path = udev_device_get_devnode(rank_fs->udev.dev);
+
         if (strlen(rank_path)) {
             if (!strcmp(dev_rank_path, rank_path)) {
-                LOG_FN(DEBUG, "rank_path: %s; dev_rank_path: %s", rank_path, dev_rank_path);
                 if (!dpu_sysfs_try_to_allocate_rank(dev_rank_path, rank_fs)) {
                     strcpy(rank_fs->rank_path, dev_rank_path);
                     return 0;
@@ -307,7 +311,6 @@ dpu_sysfs_get_available_rank(const char *rank_path, struct dpu_rank_fs *rank_fs)
             }
         } else {
             int res = dpu_sysfs_try_to_allocate_rank(dev_rank_path, rank_fs);
-            LOG_FN(DEBUG, "res: %d", res);
             if (!res) {
                 strcpy(rank_fs->rank_path, dev_rank_path);
                 return 0;
