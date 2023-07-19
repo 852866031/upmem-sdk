@@ -710,7 +710,7 @@ get_default_xfer_thread_configuration()
 {
     static const struct dpu_transfer_thread_configuration *conf = NULL;
     static const struct dpu_transfer_thread_configuration default_xfer_thread_configuration = {
-        .nb_thread_per_pool = 8,
+        .nb_thread_per_pool = 4,
         .threshold_1_thread = 1024,
         .threshold_2_threads = 2048,
         .threshold_4_threads = 32 * 1024,
