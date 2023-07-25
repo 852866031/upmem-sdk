@@ -416,8 +416,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
     struct timespec start, end;
     struct timespec start2, end2;
     struct timespec start3, end3;
-    struct timespec start4, end4;
-    struct timespec start5, end5;
+    struct timespec start4;
     double elapsed;
     clock_gettime(CLOCK_MONOTONIC, &start);
     printf("THIS IS A THREAD WRITE \n"); 
