@@ -414,6 +414,10 @@ static void
 threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop)
 {
     struct timespec start, end;
+    struct timespec start2, end2;
+    struct timespec start3, end3;
+    struct timespec start4, end4;
+    struct timespec start5, end5;
     double elapsed;
     clock_gettime(CLOCK_MONOTONIC, &start);
     printf("THIS IS A THREAD WRITE \n"); 
@@ -427,6 +431,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
 
     if (!size_transfer)
         return;
+    clock_gettime(CLOCK_MONOTONIC, &start2);
 
     /* Works only for transfers:
      * - of same size and same offset on the same line
@@ -434,8 +439,12 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
      */
     FOREACH_DPU_MULTITHREAD(dpu_id, idx, dpu_id_start, dpu_id_stop)
     {
+    clock_gettime(CLOCK_MONOTONIC, &start3);
+
         uint32_t i;
         uint8_t *ptr_dest = (uint8_t *)xeon_sp_priv->base_region_addr + BANK_START(dpu_id);
+    clock_gettime(CLOCK_MONOTONIC, &start4);
+
         bool do_dpu_transfer = false;
 
         for (ci_id = 0; ci_id < nb_cis; ++ci_id) {
@@ -460,6 +469,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
 
             byte_interleave_avx512(cache_line, (uint64_t *)((uint8_t *)ptr_dest + offset), true);
         }
+    clock_gettime(CLOCK_MONOTONIC, &end2);
 
         __builtin_ia32_mfence();
 
@@ -468,12 +478,24 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
          * the system memory.
          * cf. https://www.usenix.org/system/files/login/articles/login_summer17_07_rudoff.pdf
          */
+    clock_gettime(CLOCK_MONOTONIC, &end3);
+
     }
 
         //clock_gettime(CLOCK_MONOTONIC, &end);
-           clock_gettime(CLOCK_MONOTONIC, &end);
+        clock_gettime(CLOCK_MONOTONIC, &end);
         elapsed = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_nsec - start.tv_nsec) / 1000.0;
        printf("Temps d'exécution write to rank rank : %.10f microsecondes\n", elapsed); 
+        elapsed = (start2.tv_sec - start.tv_sec) * 1000000 + (start2.tv_nsec - start.tv_nsec) / 1000.0;
+       printf("Temps d'exécution variables : %.10f microsecondes\n", elapsed); 
+        elapsed = (start4.tv_sec - start3.tv_sec) * 1000000 + (start4.tv_nsec - start3.tv_nsec) / 1000.0;
+       printf("Temps d'exécution ptr dest : %.10f microsecondes\n", elapsed); 
+        elapsed = (end2.tv_sec - start4.tv_sec) * 1000000 + (end2.tv_nsec - start4.tv_nsec) / 1000.0;
+       printf("Temps d'exécution main content : %.10f microsecondes\n", elapsed); 
+        elapsed = (end3.tv_sec - end2.tv_sec) * 1000000 + (end3.tv_nsec - end2.tv_nsec) / 1000.0;
+       printf("Temps d'exécution fence : %.10f microsecondes\n", elapsed); 
+        elapsed = (end3.tv_sec - start3.tv_sec) * 1000000 + (end3.tv_nsec - start3.tv_nsec) / 1000.0;
+       printf("Temps d'exécution iteration : %.10f microsecondes\n", elapsed); 
 }
 
 static void
