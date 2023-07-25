@@ -478,7 +478,8 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
          * cf. https://www.usenix.org/system/files/login/articles/login_summer17_07_rudoff.pdf
          */
     clock_gettime(CLOCK_MONOTONIC, &end3);
-
+       elapsed = (end3.tv_sec - start3.tv_sec) * 1000000 + (end3.tv_nsec - start3.tv_nsec) / 1000.0;
+       printf("Temps d'exécution iteration : %.10f microsecondes\n", elapsed); 
     }
 
         //clock_gettime(CLOCK_MONOTONIC, &end);
@@ -493,8 +494,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
        printf("Temps d'exécution main content : %.10f microsecondes\n", elapsed); 
         elapsed = (end3.tv_sec - end2.tv_sec) * 1000000 + (end3.tv_nsec - end2.tv_nsec) / 1000.0;
        printf("Temps d'exécution fence : %.10f microsecondes\n", elapsed); 
-        elapsed = (end3.tv_sec - start3.tv_sec) * 1000000 + (end3.tv_nsec - start3.tv_nsec) / 1000.0;
-       printf("Temps d'exécution iteration : %.10f microsecondes\n", elapsed); 
+     
 }
 
 static void
