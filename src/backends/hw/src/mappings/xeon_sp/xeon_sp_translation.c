@@ -430,7 +430,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
         memset(&pe_l1,0,sizeof(struct perf_event_attr));
         pe_l1.type = PERF_TYPE_HW_CACHE;
         pe_l1.size = sizeof(struct perf_event_attr);
-        pe_l1.config = PERF_COUNT_HW_CACHE_L1D | (PERF_COUNT_HW_CACHE_OP_WRITE << 8) | (PERF_COUNT_HW_CACHE_RESULT_MISS << 16);
+        pe_l1.config = PERF_COUNT_HW_CACHE_L1D | (PERF_COUNT_HW_CACHE_OP_MAX << 8) | (PERF_COUNT_HW_CACHE_RESULT_MISS << 16);
         pe_l1.disabled = 1;
         pe_l1.exclude_kernel = 1;
         pe_l1.exclude_hv = 1;
@@ -438,7 +438,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
         memset(&pe_l2,0,sizeof(struct perf_event_attr));
         pe_l2.type = PERF_TYPE_HW_CACHE;
         pe_l2.size = (sizeof(struct perf_event_attr));
-        pe_l2.config = PERF_COUNT_HW_CACHE_LL | (PERF_COUNT_HW_CACHE_OP_WRITE << 8) | (PERF_COUNT_HW_CACHE_RESULT_MISS << 16);
+        pe_l2.config = PERF_COUNT_HW_CACHE_LL | (PERF_COUNT_HW_CACHE_OP_MAX << 8) | (PERF_COUNT_HW_CACHE_RESULT_MISS << 16);
         pe_l2.disabled = 1;
         pe_l2.exclude_kernel = 1;
         pe_l2.exclude_hv = 1;
