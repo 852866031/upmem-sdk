@@ -1,0 +1,5 @@
+{
+    "files.associations": {
+        "perf_event.h": "c"
+    }
+}
