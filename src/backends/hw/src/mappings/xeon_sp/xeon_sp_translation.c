@@ -422,9 +422,9 @@ static long perf_event_open(struct perf_event_attr *hw_event, pid_t pid, int cpu
 static void
 threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop)
 {
-      struct perf_event_attr pe_l1, pe_l2, pe_l3;
-        long long count_l1, count_l2, count_l3;
-        int fd_l1, fd_l2, fd_l3;
+      struct perf_event_attr pe_l1, pe_l2;
+        long long count_l1, count_l2;
+        int fd_l1, fd_l2;
 
 
         memset(&pe_l1,0,sizeof(struct perf_event_attr));
@@ -438,23 +438,15 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
         memset(&pe_l2,0,sizeof(struct perf_event_attr));
         pe_l2.type = PERF_TYPE_HW_CACHE;
         pe_l2.size = (sizeof(struct perf_event_attr));
-        pe_l2.config = PERF_COUNT_HW_CACHE_L2 | (PERF_COUNT_HW_CACHE_OP_WRITE << 8) | (PERF_COUNT_HW_CACHE_RESULT_ACCESS << 16);
+        pe_l2.config = PERF_COUNT_HW_CACHE_LL | (PERF_COUNT_HW_CACHE_OP_WRITE << 8) | (PERF_COUNT_HW_CACHE_RESULT_ACCESS << 16);
         pe_l2.disabled = 1;
         pe_l2.exclude_kernel = 1;
         pe_l2.exclude_hv = 1;
 
-        memset(&pe_l3,0,sizeof(struct perf_event_attr));
-        pe_l3.type = PERF_TYPE_HW_CACHE;
-        pe_l3.size = (sizeof(struct perf_event_attr));
-        pe_l3.config = PERF_COUNT_HW_CACHE_LL | (PERF_COUNT_HW_CACHE_OP_WRITE << 8) | (PERF_COUNT_HW_CACHE_RESULT_ACCESS << 16);
-        pe_l3.disabled = 1;
-        pe_l3.exclude_kernel = 1;
-        pe_l3.exclude_hv = 1;
 
         // Ouvrir les compteurs de performance pour les différents niveaux de cache
         fd_l1 = perf_event_open(&pe_l1, 0, -1, -1, 0);
         fd_l2 = perf_event_open(&pe_l2, 0, -1, -1, 0);
-        fd_l3 = perf_event_open(&pe_l3, 0, -1, -1, 0);
 
         // Activer les compteurs de performance
         ioctl(fd_l1, PERF_EVENT_IOC_RESET, 0);
@@ -462,9 +454,6 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
 
         ioctl(fd_l2, PERF_EVENT_IOC_RESET, 0);
         ioctl(fd_l2, PERF_EVENT_IOC_ENABLE, 0);
-
-        ioctl(fd_l3, PERF_EVENT_IOC_RESET, 0);
-        ioctl(fd_l3, PERF_EVENT_IOC_ENABLE, 0);
 
 
     struct timespec start, end;
@@ -537,16 +526,13 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
 
         ioctl(fd_l1, PERF_EVENT_IOC_DISABLE, 0);
         ioctl(fd_l2, PERF_EVENT_IOC_DISABLE, 0);
-        ioctl(fd_l3, PERF_EVENT_IOC_DISABLE, 0);
 
         // Lire les valeurs des compteurs
         read(fd_l1, &count_l1, sizeof(long long));
         read(fd_l2, &count_l2, sizeof(long long));
-        read(fd_l3, &count_l3, sizeof(long long));
 
         printf("Misses de cache L1 pour threads_write_to_rank : %lld\n", count_l1);
-        printf("Misses de cache L2 pour threads_write_to_rank : %lld\n", count_l2);
-        printf("Misses de cache L3 pour threads_write_to_rank : %lld\n", count_l3);
+        printf("Misses de cache LL pour threads_write_to_rank : %lld\n", count_l2);
 
         // Fermer les descripteurs de fichier des compteurs de performance
         close(fd_l1);
