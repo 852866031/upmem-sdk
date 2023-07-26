@@ -419,6 +419,51 @@ static long perf_event_open(struct perf_event_attr *hw_event, pid_t pid, int cpu
 static void
 threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop)
 {
+      struct perf_event_attr pe_l1, pe_l2, pe_l3;
+        long long count_l1, count_l2, count_l3;
+        int fd_l1, fd_l2, fd_l3;
+
+
+        memset(&pe_l1,0,sizeof(struct perf_event_attr));
+        pe_l1.type = PERF_TYPE_HW_CACHE;
+        pe_l1.size = (sizeof(struct perf_event_attr));
+        pe_l1.config = PERF_COUNT_HW_CACHE_L1D | (PERF_COUNT_HW_CACHE_OP_READ << 8) | (PERF_COUNT_HW_CACHE_MISSES << 16)
+        pe_l1.disabled = 1;
+        pe_l1.exclude_kernel = 1;
+        pe_l1.exclude_hv = 1;
+
+        memset(&pe_l2,0,sizeof(struct perf_event_attr));
+        pe_l2.type = PERF_TYPE_HW_CACHE;
+        pe_l2.size = (sizeof(struct perf_event_attr));
+        pe_l2.config = PERF_COUNT_HW_CACHE_L1D | (PERF_COUNT_HW_CACHE_OP_READ << 8) | (PERF_COUNT_HW_CACHE_MISSES << 16)
+        pe_l2.disabled = 1;
+        pe_l2.exclude_kernel = 1;
+        pe_l2.exclude_hv = 1;
+
+        memset(&pe_l3,0,sizeof(struct perf_event_attr));
+        pe_l3.type = PERF_TYPE_HW_CACHE;
+        pe_l3.size = (sizeof(struct perf_event_attr));
+        pe_l3.config = PERF_COUNT_HW_CACHE_L1D | (PERF_COUNT_HW_CACHE_OP_READ << 8) | (PERF_COUNT_HW_CACHE_MISSES << 16)
+        pe_l3.disabled = 1;
+        pe_l3.exclude_kernel = 1;
+        pe_l3.exclude_hv = 1;
+
+        // Ouvrir les compteurs de performance pour les différents niveaux de cache
+        fd_l1 = perf_event_open(&pe_l1, 0, -1, -1, 0);
+        fd_l2 = perf_event_open(&pe_l2, 0, -1, -1, 0);
+        fd_l3 = perf_event_open(&pe_l3, 0, -1, -1, 0);
+
+        // Activer les compteurs de performance
+        ioctl(fd_l1, PERF_EVENT_IOC_RESET, 0);
+        ioctl(fd_l1, PERF_EVENT_IOC_ENABLE, 0);
+
+        ioctl(fd_l2, PERF_EVENT_IOC_RESET, 0);
+        ioctl(fd_l2, PERF_EVENT_IOC_ENABLE, 0);
+
+        ioctl(fd_l3, PERF_EVENT_IOC_RESET, 0);
+        ioctl(fd_l3, PERF_EVENT_IOC_ENABLE, 0);
+
+
     struct timespec start, end;
  /*    struct timespec start2, end2;
     struct timespec start3, end3;
@@ -487,6 +532,23 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
       
     }
 
+        ioctl(fd_l1, PERF_EVENT_IOC_DISABLE, 0);
+        ioctl(fd_l2, PERF_EVENT_IOC_DISABLE, 0);
+        ioctl(fd_l3, PERF_EVENT_IOC_DISABLE, 0);
+
+        // Lire les valeurs des compteurs
+        read(fd_l1, &count_l1, sizeof(long long));
+        read(fd_l2, &count_l2, sizeof(long long));
+        read(fd_l3, &count_l3, sizeof(long long));
+
+        printf("Misses de cache L1 pour threads_write_to_rank : %lld\n", count_l1);
+        printf("Misses de cache L2 pour threads_write_to_rank : %lld\n", count_l2);
+        printf("Misses de cache L3 pour threads_write_to_rank : %lld\n", count_l3);
+
+        // Fermer les descripteurs de fichier des compteurs de performance
+        close(fd_l1);
+        close(fd_l2);
+        close(fd_l3);
         //clock_gettime(CLOCK_MONOTONIC, &end);
        clock_gettime(CLOCK_MONOTONIC, &end);
         elapsed = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_nsec - start.tv_nsec) / 1000.0;
@@ -603,72 +665,8 @@ thread_do_mram_xfer(struct xeon_sp_private *xeon_sp_priv, uint8_t thread_id)
 
     if (xeon_sp_priv->direction == thread_mram_xfer_read)
         threads_read_from_rank(xeon_sp_priv, dpu_id_start, dpu_id_stop);
-    else {
-        struct perf_event_attr pe_l1, pe_l2, pe_l3;
-        long long count_l1, count_l2, count_l3;
-        int fd_l1, fd_l2, fd_l3;
-
-
-        memset(&pe_l1,0,sizeof(struct perf_event_attr));
-        pe_l1.type = PERF_TYPE_HW_CACHE;
-        pe_l1.size = (sizeof(struct perf_event_attr));
-        pe_l1.config = PERF_COUNT_HW_CACHE_L1D | (PERF_COUNT_HW_CACHE_OP_READ << 8) | (PERF_COUNT_HW_CACHE_MISSES << 16)
-        pe_l1.disabled = 1;
-        pe_l1.exclude_kernel = 1;
-        pe_l1.exclude_hv = 1;
-
-        memset(&pe_l2,0,sizeof(struct perf_event_attr));
-        pe_l2.type = PERF_TYPE_HW_CACHE;
-        pe_l2.size = (sizeof(struct perf_event_attr));
-        pe_l2.config = PERF_COUNT_HW_CACHE_L1D | (PERF_COUNT_HW_CACHE_OP_READ << 8) | (PERF_COUNT_HW_CACHE_MISSES << 16)
-        pe_l2.disabled = 1;
-        pe_l2.exclude_kernel = 1;
-        pe_l2.exclude_hv = 1;
-
-        memset(&pe_l3,0,sizeof(struct perf_event_attr));
-        pe_l3.type = PERF_TYPE_HW_CACHE;
-        pe_l3.size = (sizeof(struct perf_event_attr));
-        pe_l3.config = PERF_COUNT_HW_CACHE_L1D | (PERF_COUNT_HW_CACHE_OP_READ << 8) | (PERF_COUNT_HW_CACHE_MISSES << 16)
-        pe_l3.disabled = 1;
-        pe_l3.exclude_kernel = 1;
-        pe_l3.exclude_hv = 1;
-
-        // Ouvrir les compteurs de performance pour les différents niveaux de cache
-        fd_l1 = perf_event_open(&pe_l1, 0, -1, -1, 0);
-        fd_l2 = perf_event_open(&pe_l2, 0, -1, -1, 0);
-        fd_l3 = perf_event_open(&pe_l3, 0, -1, -1, 0);
-
-        // Activer les compteurs de performance
-        ioctl(fd_l1, PERF_EVENT_IOC_RESET, 0);
-        ioctl(fd_l1, PERF_EVENT_IOC_ENABLE, 0);
-
-        ioctl(fd_l2, PERF_EVENT_IOC_RESET, 0);
-        ioctl(fd_l2, PERF_EVENT_IOC_ENABLE, 0);
-
-        ioctl(fd_l3, PERF_EVENT_IOC_RESET, 0);
-        ioctl(fd_l3, PERF_EVENT_IOC_ENABLE, 0);
-
-
+    else
         threads_write_to_rank(xeon_sp_priv, dpu_id_start, dpu_id_stop);
-
-        ioctl(fd_l1, PERF_EVENT_IOC_DISABLE, 0);
-        ioctl(fd_l2, PERF_EVENT_IOC_DISABLE, 0);
-        ioctl(fd_l3, PERF_EVENT_IOC_DISABLE, 0);
-
-        // Lire les valeurs des compteurs
-        read(fd_l1, &count_l1, sizeof(long long));
-        read(fd_l2, &count_l2, sizeof(long long));
-        read(fd_l3, &count_l3, sizeof(long long));
-
-        printf("Misses de cache L1 pour threads_write_to_rank : %lld\n", count_l1);
-        printf("Misses de cache L2 pour threads_write_to_rank : %lld\n", count_l2);
-        printf("Misses de cache L3 pour threads_write_to_rank : %lld\n", count_l3);
-
-        // Fermer les descripteurs de fichier des compteurs de performance
-        close(fd_l1);
-        close(fd_l2);
-        close(fd_l3);
-    }
     
         
 }
