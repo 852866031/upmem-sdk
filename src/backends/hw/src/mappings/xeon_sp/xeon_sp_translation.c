@@ -537,7 +537,6 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
         // Fermer les descripteurs de fichier des compteurs de performance
         close(fd_l1);
         close(fd_l2);
-        close(fd_l3);
         //clock_gettime(CLOCK_MONOTONIC, &end);
        clock_gettime(CLOCK_MONOTONIC, &end);
         elapsed = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_nsec - start.tv_nsec) / 1000.0;
