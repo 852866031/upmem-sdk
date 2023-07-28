@@ -422,7 +422,7 @@ static long perf_event_open(struct perf_event_attr *hw_event, pid_t pid, int cpu
 static void
 threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop)
 {
-      struct perf_event_attr pe_l1, pe_l2;
+      /* struct perf_event_attr pe_l1, pe_l2;
         long long count_l1, count_l2;
         int fd_l1, fd_l2;
 
@@ -454,7 +454,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
 
         ioctl(fd_l2, PERF_EVENT_IOC_RESET, 0);
         ioctl(fd_l2, PERF_EVENT_IOC_ENABLE, 0);
-
+ */
 
     struct timespec start, end;
  /*    struct timespec start2, end2;
@@ -524,7 +524,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
       
     }
 
-        ioctl(fd_l1, PERF_EVENT_IOC_DISABLE, 0);
+     /*    ioctl(fd_l1, PERF_EVENT_IOC_DISABLE, 0);
         ioctl(fd_l2, PERF_EVENT_IOC_DISABLE, 0);
 
         // Lire les valeurs des compteurs
@@ -537,10 +537,10 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
         // Fermer les descripteurs de fichier des compteurs de performance
         close(fd_l1);
         close(fd_l2);
-        //clock_gettime(CLOCK_MONOTONIC, &end);
+        //clock_gettime(CLOCK_MONOTONIC, &end);*/
        clock_gettime(CLOCK_MONOTONIC, &end);
         elapsed = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_nsec - start.tv_nsec) / 1000.0;
-       printf("Temps d'exécution write to rank rank : %.10f microsecondes\n", elapsed); 
+       printf("Temps d'exécution write to rank rank : %.10f microsecondes\n", elapsed);  
      /*    elapsed = (start2.tv_sec - start.tv_sec) * 1000000 + (start2.tv_nsec - start.tv_nsec) / 1000.0;
        printf("Temps d'exécution variables : %.10f microsecondes\n", elapsed); 
         elapsed = (start4.tv_sec - start3.tv_sec) * 1000000 + (start4.tv_nsec - start3.tv_nsec) / 1000.0;
