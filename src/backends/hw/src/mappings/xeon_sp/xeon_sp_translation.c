@@ -415,9 +415,9 @@ channel_id_to_pool_id(int channel_id)
     return pool_id;
 }
 
-static long perf_event_open(struct perf_event_attr *hw_event, pid_t pid, int cpu, int group_fd, unsigned long flags) {
+/* static long perf_event_open(struct perf_event_attr *hw_event, pid_t pid, int cpu, int group_fd, unsigned long flags) {
     return syscall(__NR_perf_event_open, hw_event, pid, cpu, group_fd, flags);
-}
+} */
 
 typedef struct _xfer_pt {
     uint64_t nb_pages;
@@ -425,7 +425,10 @@ typedef struct _xfer_pt {
     uint8_t** pages;
 } xfer_page_table;
 
-uint8_t
+int min(a,b){
+    return a<b ? a:b;
+}
+int
 c_write_to_dpus(uint8_t* ptr_dest, xfer_page_table* matrix, uint32_t size_transfer, uint32_t offset_in_mram, uint8_t idx)
 {
 
@@ -528,10 +531,10 @@ static void
 threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop){
     struct dpu_transfer_matrix *xfer_matrix = xeon_sp_priv->xfer_matrix;
 
-    uint8_t idx, ci_id, dpu_id, nb_cis;
+    uint8_t idx, dpu_id;
     uint32_t size_transfer = xfer_matrix->size;
     uint32_t offset = xfer_matrix->offset;
-    nb_cis = xeon_sp_priv->tr->interleave->nb_ci;
+    //nb_cis = xeon_sp_priv->tr->interleave->nb_ci;
  
     size_t page_size = sysconf(_SC_PAGESIZE);
     uint32_t nb_pages = (size_transfer + page_size - 1) / page_size;
@@ -547,7 +550,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
     FOREACH_DPU_MULTITHREAD(dpu_id, idx, dpu_id_start, dpu_id_stop){
         uint8_t *ptr_dest = (uint8_t *)xeon_sp_priv->base_region_addr + BANK_START(dpu_id);
 
-        uint8_t result = c_write_to_dpus(ptr_dest,&matrix,size_transfer,offset,idx);
+        int result = c_write_to_dpus(ptr_dest,&matrix,size_transfer,offset,idx);
         if (result < 0)
             continue;
         

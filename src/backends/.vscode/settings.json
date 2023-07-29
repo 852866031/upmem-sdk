@@ -1,5 +1,12 @@
 {
     "files.associations": {
-        "perf_event.h": "c"
+        "perf_event.h": "c",
+        "*.tcc": "c",
+        "string_view": "c",
+        "algorithm": "c",
+        "random": "c",
+        "istream": "c",
+        "limits": "c",
+        "numeric": "c"
     }
 }
