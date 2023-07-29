@@ -592,9 +592,9 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
     clock_gettime(CLOCK_MONOTONIC, &end);
     elapsed = (end.tv_sec - start.tv_sec)  + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
     printf("Temps d'exécution write to rank total : %.10f sec\n", elapsed);  
-    elapsed = (end.tv_sec - start.tv_sec)  + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+    elapsed = (middle.tv_sec - start.tv_sec)  + (middle.tv_nsec - start.tv_nsec) / 1000000000.0;
     printf("Temps d'exécution write to rank set matrix : %.10f sec\n", elapsed);
-    elapsed = (end.tv_sec - start.tv_sec)  + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+    elapsed = (end.tv_sec - middle.tv_sec)  + (end.tv_nsec - middle.tv_nsec) / 1000000000.0;
     printf("Temps d'exécution write to rank main content : %.10f sec\n", elapsed);    
     free_matrix(matrix);
     free(matrix);
