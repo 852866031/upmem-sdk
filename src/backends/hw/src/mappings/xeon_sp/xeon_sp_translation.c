@@ -419,47 +419,153 @@ static long perf_event_open(struct perf_event_attr *hw_event, pid_t pid, int cpu
     return syscall(__NR_perf_event_open, hw_event, pid, cpu, group_fd, flags);
 }
 
+typedef struct _xfer_pt {
+    uint64_t nb_pages;
+    uint32_t off_first_page;
+    uint8_t** pages;
+} xfer_page_table;
+
+uint8_t
+c_write_to_dpus(uint8_t* ptr_dest, xfer_page_table* matrix, uint32_t size_transfer, uint32_t offset_in_mram, uint8_t idx)
+{
+
+    uint64_t cache_line[NB_REAL_CIS] = {0};
+    uint8_t* cur_pages[NB_REAL_CIS] = {NULL};
+    uint32_t offset_in_page[NB_REAL_CIS] = {0};
+    uint32_t len_xfer_in_page[NB_REAL_CIS] = {0};
+    uint32_t page[NB_REAL_CIS] = {0};
+    uint32_t len_xfer_done_in_page[NB_REAL_CIS] = {0};
+    xfer_page_table* xferp;
+    bool do_dpu_transfer = false;
+    size_t len_xfer_remaining;
+
+    for (int ci_id = 0; ci_id < NB_REAL_CIS; ci_id++) {
+        // Here is the xfer_pages for the dpu idx of the CI of index ci_id
+        xferp = matrix + (idx + ci_id);
+        if (xferp->nb_pages == 0) {
+            continue;
+        }
+        /*if (xferp->nb_pages != (uint64_t)xferp->pages.len()) {
+            panic("VPIMDevice panicked because of inconsistent number of pages");
+        }*/
+        do_dpu_transfer = true;
+        page[ci_id] = 0;
+        // Read the page content into the memory
+        // let _dur = memory_read_u8(mem, xferp.pages[page[ci_id]], &mut cur_pages[ci_id]);
+        cur_pages[ci_id] =  *((uint8_t **)(xferp->pages) + page[ci_id]);
+        len_xfer_in_page[ci_id] = (uint32_t)min(4096 - xferp->off_first_page, size_transfer);
+        offset_in_page[ci_id] = xferp->off_first_page;
+        len_xfer_done_in_page[ci_id] = 0;
+    }
+
+    if (!do_dpu_transfer) {
+        idx += NB_REAL_CIS;
+        return -1; //continue;
+    }
+
+    len_xfer_remaining = size_transfer;
+    for (size_t len_xfer_done = 0; len_xfer_done < size_transfer; len_xfer_done += NB_REAL_CIS) {
+
+        size_t mram_64_bit_word_offset = apply_address_translation_on_mram_offset((len_xfer_done + offset_in_mram)) / 8;
+        size_t next_data = mram_64_bit_word_offset * sizeof(uint64_t) * 16;
+        size_t offset = (next_data % (BANK_CHUNK_SIZE)) + (next_data / (BANK_CHUNK_SIZE)) * (BANK_NEXT_CHUNK_OFFSET);
+
+        for (size_t ci_id = 0; ci_id < NB_REAL_CIS; ci_id++) {
+            xferp = matrix + (idx + ci_id);
+            if (xferp->nb_pages != 0) {
+                cache_line[ci_id] = *(uint64_t*)(cur_pages[ci_id] + 
+               ( offset_in_page[ci_id] + len_xfer_done_in_page[ci_id]));
+            }
+        }
+
+        byte_interleave_avx512((uint64_t*)cache_line, (uint64_t*)(ptr_dest + offset), true);
+
+        len_xfer_remaining -= NB_REAL_CIS;
+
+        for (size_t ci_id = 0; ci_id < NB_REAL_CIS; ci_id++) {
+            xferp = matrix + (idx + ci_id);
+            if (xferp->nb_pages == 0) {
+                continue;
+            }
+
+            len_xfer_done_in_page[ci_id] += NB_REAL_CIS;
+            
+            if (page[ci_id] < (xferp->nb_pages -1) && len_xfer_done_in_page[ci_id] >= len_xfer_in_page[ci_id]) {
+                page[ci_id] += 1;
+                cur_pages[ci_id] = *((uint8_t **)(xferp->pages) + page[ci_id]);
+
+                len_xfer_in_page[ci_id] = min(4096, len_xfer_remaining);
+                len_xfer_done_in_page[ci_id] = 0;
+                offset_in_page[ci_id] = 0;
+            }
+        }
+    }
+        return 0;
+
+}
+void matrix_creation(xfer_page_table* matrix) {
+    // Allouer l'espace mémoire pour la structure xfer_page_table
+    matrix->pages = (uint8_t**)malloc(matrix->nb_pages * sizeof(uint8_t*));
+
+    // Allouer et remplir chaque page avec des données dummy (par exemple, des zéros)
+    for (uint64_t i = 0; i < matrix->nb_pages; ++i) {
+        // Allouer une page de mémoire alignée sur la taille de page du système
+        size_t page_size = sysconf(_SC_PAGESIZE);
+        posix_memalign((void**)&(matrix->pages[i]), page_size, page_size);
+
+        // Remplir la page avec des données dummy (zéros)
+         memset(matrix->pages[i], 0, page_size);
+    }
+}
+
+void free_matrix(xfer_page_table* matrix) {
+    for (uint64_t i = 0; i < matrix->nb_pages; ++i) {
+        free(matrix->pages[i]);
+    }
+    free(matrix->pages);
+}
 static void
+threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop){
+    struct dpu_transfer_matrix *xfer_matrix = xeon_sp_priv->xfer_matrix;
+
+    uint8_t idx, ci_id, dpu_id, nb_cis;
+    uint32_t size_transfer = xfer_matrix->size;
+    uint32_t offset = xfer_matrix->offset;
+    nb_cis = xeon_sp_priv->tr->interleave->nb_ci;
+ 
+    size_t page_size = sysconf(_SC_PAGESIZE);
+    uint32_t nb_pages = (size_transfer + page_size - 1) / page_size;
+    xfer_page_table matrix;
+    matrix.nb_pages = nb_pages;
+    matrix.off_first_page = offset;
+
+    if (!size_transfer)
+        return;
+
+    matrix_creation(&matrix);
+    
+    FOREACH_DPU_MULTITHREAD(dpu_id, idx, dpu_id_start, dpu_id_stop){
+        uint8_t *ptr_dest = (uint8_t *)xeon_sp_priv->base_region_addr + BANK_START(dpu_id);
+
+        uint8_t result = c_write_to_dpus(ptr_dest,&matrix,size_transfer,offset,idx);
+        if (result < 0)
+            continue;
+        
+        __builtin_ia32_mfence();
+    }
+
+   
+
+    free_matrix(&matrix);
+}
+
+/* static void
 threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop)
 {
-      /* struct perf_event_attr pe_l1, pe_l2;
-        long long count_l1, count_l2;
-        int fd_l1, fd_l2;
-
-
-        memset(&pe_l1,0,sizeof(struct perf_event_attr));
-        pe_l1.type = PERF_TYPE_HW_CACHE;
-        pe_l1.size = sizeof(struct perf_event_attr);
-        pe_l1.config = PERF_COUNT_HW_CACHE_L1D | (PERF_COUNT_HW_CACHE_OP_WRITE << 8) | (PERF_COUNT_HW_CACHE_RESULT_MISS << 16);
-        pe_l1.disabled = 1;
-        pe_l1.exclude_kernel = 1;
-        pe_l1.exclude_hv = 1;
-
-        memset(&pe_l2,0,sizeof(struct perf_event_attr));
-        pe_l2.type = PERF_TYPE_HW_CACHE;
-        pe_l2.size = (sizeof(struct perf_event_attr));
-        pe_l2.config = PERF_COUNT_HW_CACHE_LL | (PERF_COUNT_HW_CACHE_OP_WRITE << 8) | (PERF_COUNT_HW_CACHE_RESULT_MISS << 16);
-        pe_l2.disabled = 1;
-        pe_l2.exclude_kernel = 1;
-        pe_l2.exclude_hv = 1;
-
-
-        // Ouvrir les compteurs de performance pour les différents niveaux de cache
-        fd_l1 = perf_event_open(&pe_l1, 0, -1, -1, 0);
-        fd_l2 = perf_event_open(&pe_l2, 0, -1, -1, 0);
-
-        // Activer les compteurs de performance
-        ioctl(fd_l1, PERF_EVENT_IOC_RESET, 0);
-        ioctl(fd_l1, PERF_EVENT_IOC_ENABLE, 0);
-
-        ioctl(fd_l2, PERF_EVENT_IOC_RESET, 0);
-        ioctl(fd_l2, PERF_EVENT_IOC_ENABLE, 0);
- */
+     
 
     struct timespec start, end;
- /*    struct timespec start2, end2;
-    struct timespec start3, end3;
-    struct timespec start4; */
+
     double elapsed;
     clock_gettime(CLOCK_MONOTONIC, &start);
     printf("THIS IS A THREAD WRITE \n"); 
@@ -475,10 +581,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
         return;
     //clock_gettime(CLOCK_MONOTONIC, &start2);
 
-    /* Works only for transfers:
-     * - of same size and same offset on the same line
-     * - size and offset are aligned on 8B
-     */
+
     FOREACH_DPU_MULTITHREAD(dpu_id, idx, dpu_id_start, dpu_id_stop)
     {
     //clock_gettime(CLOCK_MONOTONIC, &start3);
@@ -515,43 +618,16 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
 
         __builtin_ia32_mfence();
 
-        /* Here we use non-temporal stores. These stores are "write-combining" and bypass the CPU cache,
-         * so using them does not require a flush. The mfence instruction ensures the stores have reached
-         * the system memory.
-         * cf. https://www.usenix.org/system/files/login/articles/login_summer17_07_rudoff.pdf
-         */
-    //clock_gettime(CLOCK_MONOTONIC, &end3);
+    
       
     }
 
-     /*    ioctl(fd_l1, PERF_EVENT_IOC_DISABLE, 0);
-        ioctl(fd_l2, PERF_EVENT_IOC_DISABLE, 0);
-
-        // Lire les valeurs des compteurs
-        read(fd_l1, &count_l1, sizeof(long long));
-        read(fd_l2, &count_l2, sizeof(long long));
-
-        printf("Misses de cache L1 pour threads_write_to_rank : %lld\n", count_l1);
-        printf("Misses de cache LL pour threads_write_to_rank : %lld\n", count_l2);
-
-        // Fermer les descripteurs de fichier des compteurs de performance
-        close(fd_l1);
-        close(fd_l2);
-        //clock_gettime(CLOCK_MONOTONIC, &end);*/
+   
        clock_gettime(CLOCK_MONOTONIC, &end);
         elapsed = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_nsec - start.tv_nsec) / 1000.0;
        printf("Temps d'exécution write to rank rank : %.10f microsecondes\n", elapsed);  
-     /*    elapsed = (start2.tv_sec - start.tv_sec) * 1000000 + (start2.tv_nsec - start.tv_nsec) / 1000.0;
-       printf("Temps d'exécution variables : %.10f microsecondes\n", elapsed); 
-        elapsed = (start4.tv_sec - start3.tv_sec) * 1000000 + (start4.tv_nsec - start3.tv_nsec) / 1000.0;
-       printf("Temps d'exécution ptr dest : %.10f microsecondes\n", elapsed); 
-        elapsed = (end2.tv_sec - start4.tv_sec) * 1000000 + (end2.tv_nsec - start4.tv_nsec) / 1000.0;
-       printf("Temps d'exécution main content : %.10f microsecondes\n", elapsed); 
-        elapsed = (end3.tv_sec - end2.tv_sec) * 1000000 + (end3.tv_nsec - end2.tv_nsec) / 1000.0;
-       printf("Temps d'exécution fence : %.10f microsecondes\n", elapsed); 
-      elapsed = (end3.tv_sec - start3.tv_sec) * 1000000 + (end3.tv_nsec - start3.tv_nsec) / 1000.0;
-       printf("Temps d'exécution iteration : %.10f microsecondes\n", elapsed);  */
-}
+ 
+} */
 
 static void
 threads_read_from_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop)
