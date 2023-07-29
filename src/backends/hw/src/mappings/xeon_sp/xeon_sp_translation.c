@@ -431,7 +431,7 @@ typedef struct _xfer_pt {
 int
 c_write_to_dpus(uint8_t* ptr_dest, xfer_page_table* matrix, uint32_t size_transfer, uint32_t offset_in_mram, uint8_t idx)
 {
-
+    printf("started write to dpus \n");
     uint64_t cache_line[NB_REAL_CIS] = {0};
     uint8_t* cur_pages[NB_REAL_CIS] = {NULL};
     uint32_t offset_in_page[NB_REAL_CIS] = {0};
@@ -441,6 +441,7 @@ c_write_to_dpus(uint8_t* ptr_dest, xfer_page_table* matrix, uint32_t size_transf
     xfer_page_table* xferp;
     bool do_dpu_transfer = false;
     size_t len_xfer_remaining;
+    printf("Done variables \n");
 
     for (int ci_id = 0; ci_id < NB_REAL_CIS; ci_id++) {
         // Here is the xfer_pages for the dpu idx of the CI of index ci_id
@@ -458,6 +459,7 @@ c_write_to_dpus(uint8_t* ptr_dest, xfer_page_table* matrix, uint32_t size_transf
         offset_in_page[ci_id] = xferp->off_first_page;
         len_xfer_done_in_page[ci_id] = 0;
     }
+    printf("Done CIS \n");
 
     if (!do_dpu_transfer) {
         idx += NB_REAL_CIS;
@@ -501,11 +503,12 @@ c_write_to_dpus(uint8_t* ptr_dest, xfer_page_table* matrix, uint32_t size_transf
             }
         }
     }
+    printf("Done MAIN CONTENT \n");
+
         return 0;
 
 }
 void matrix_creation(xfer_page_table* matrix) {
-    printf("Started there in matrix creation \n");
 
     // Allouer l'espace mémoire pour la structure xfer_page_table
     matrix->pages = (uint8_t**)malloc(matrix->nb_pages * sizeof(uint8_t*));
@@ -519,7 +522,6 @@ void matrix_creation(xfer_page_table* matrix) {
         // Remplir la page avec des données dummy (zéros)
          memset(matrix->pages[i], 0, page_size);
     }
-    printf("Done there in matrix creation \n");
 }
 
 void free_matrix(xfer_page_table* matrix) {
@@ -531,22 +533,18 @@ void free_matrix(xfer_page_table* matrix) {
 
 static void
 threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop){
-    printf("Right starting the function\n");
     struct dpu_transfer_matrix *xfer_matrix = xeon_sp_priv->xfer_matrix;
 
     uint8_t idx, dpu_id;
     uint32_t size_transfer = xfer_matrix->size;
     uint32_t offset = xfer_matrix->offset;
     //nb_cis = xeon_sp_priv->tr->interleave->nb_ci;
-    printf("Step 2\n");
  
     size_t page_size = sysconf(_SC_PAGESIZE);
     uint32_t nb_pages = (size_transfer + page_size - 1) / page_size;
-    printf("Before creating the matrix\n");
     xfer_page_table *matrix = ( xfer_page_table *) malloc(sizeof(xfer_page_table));
     matrix->nb_pages = nb_pages;
     matrix->off_first_page = offset;
-    printf("Done creating the matrix\n");
 
     if (!size_transfer)
         return;
@@ -720,8 +718,6 @@ threads_read_from_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_star
 static void
 thread_do_mram_xfer(struct xeon_sp_private *xeon_sp_priv, uint8_t thread_id)
 {
-    printf("Is there anything ? \n");
-
     uint8_t nb_threads_for_xfer = xeon_sp_priv->nb_threads_for_xfer;
     if (!(nb_threads_for_xfer > thread_id)) {
         return;
