@@ -531,7 +531,7 @@ void free_matrix(xfer_page_table* matrix) {
     free(matrix->pages);
 }
 static void
-threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop){
+threads_write_to_rank2(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop){
     printf("Right starting the function\n");
     struct dpu_transfer_matrix *xfer_matrix = xeon_sp_priv->xfer_matrix;
 
@@ -569,7 +569,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
     free_matrix(&matrix);
 }
 
-/* static void
+ static void
 threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop)
 {
      
@@ -637,7 +637,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
         elapsed = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_nsec - start.tv_nsec) / 1000.0;
        printf("Temps d'exécution write to rank rank : %.10f microsecondes\n", elapsed);  
  
-} */
+} 
 
 static void
 threads_read_from_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop)
