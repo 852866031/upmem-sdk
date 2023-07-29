@@ -543,29 +543,28 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
     size_t page_size = sysconf(_SC_PAGESIZE);
     uint32_t nb_pages = (size_transfer + page_size - 1) / page_size;
     printf("Before creating the matrix\n");
-    xfer_page_table matrix;
-    matrix.nb_pages = nb_pages;
-    matrix.off_first_page = offset;
+    xfer_page_table *matrix = ( xfer_page_table *) malloc(sizeof(xfer_page_table));
+    matrix->nb_pages = nb_pages;
+    matrix->off_first_page = offset;
     printf("Done creating the matrix\n");
 
     if (!size_transfer)
         return;
 
-    matrix_creation(&matrix);
+    matrix_creation(matrix);
     
     FOREACH_DPU_MULTITHREAD(dpu_id, idx, dpu_id_start, dpu_id_stop){
         uint8_t *ptr_dest = (uint8_t *)xeon_sp_priv->base_region_addr + BANK_START(dpu_id);
 
-        int result = c_write_to_dpus(ptr_dest,&matrix,size_transfer,offset,idx);
+        int result = c_write_to_dpus(ptr_dest,matrix,size_transfer,offset,idx);
         if (result < 0)
             continue;
         
         __builtin_ia32_mfence();
     }
 
-   
-
-    free_matrix(&matrix);
+    free_matrix(matrix);
+    free(matrix);
 }
 
 /* static void
@@ -721,6 +720,8 @@ threads_read_from_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_star
 static void
 thread_do_mram_xfer(struct xeon_sp_private *xeon_sp_priv, uint8_t thread_id)
 {
+    printf("Is there anything ? \n");
+
     uint8_t nb_threads_for_xfer = xeon_sp_priv->nb_threads_for_xfer;
     if (!(nb_threads_for_xfer > thread_id)) {
         return;
@@ -733,7 +734,6 @@ thread_do_mram_xfer(struct xeon_sp_private *xeon_sp_priv, uint8_t thread_id)
     } else {
         dpu_id_stop = (thread_id + 1) * nb_dpus_per_thread;
     }
-    printf("Is there anything ? \n");
     if (xeon_sp_priv->direction == thread_mram_xfer_read)
         threads_read_from_rank(xeon_sp_priv, dpu_id_start, dpu_id_stop);
     else
