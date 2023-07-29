@@ -425,7 +425,7 @@ typedef struct _xfer_pt {
     uint8_t** pages;
 } xfer_page_table;
 
-int min(int a,int b){
+/* int min(int a,int b){
     return a<b ? a:b;
 }
 int
@@ -448,9 +448,7 @@ c_write_to_dpus(uint8_t* ptr_dest, xfer_page_table* matrix, uint32_t size_transf
         if (xferp->nb_pages == 0) {
             continue;
         }
-        /*if (xferp->nb_pages != (uint64_t)xferp->pages.len()) {
-            panic("VPIMDevice panicked because of inconsistent number of pages");
-        }*/
+
         do_dpu_transfer = true;
         page[ci_id] = 0;
         // Read the page content into the memory
@@ -567,7 +565,7 @@ threads_write_to_rank2(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_star
    
 
     free_matrix(&matrix);
-}
+} */
 
  static void
 threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop)
@@ -739,7 +737,7 @@ thread_do_mram_xfer(struct xeon_sp_private *xeon_sp_priv, uint8_t thread_id)
         threads_read_from_rank(xeon_sp_priv, dpu_id_start, dpu_id_stop);
     else
         {
-            threads_write_to_rank2(xeon_sp_priv, dpu_id_start, dpu_id_stop);
+            //threads_write_to_rank2(xeon_sp_priv, dpu_id_start, dpu_id_stop);
             threads_write_to_rank(xeon_sp_priv, dpu_id_start, dpu_id_stop);
         }
     
