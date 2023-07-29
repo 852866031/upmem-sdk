@@ -542,7 +542,7 @@ void matrix_creation(xfer_page_table* matrix, uint64_t nb_pages, uint64_t offset
     for (uint64_t i = 0; i < nb_pages; ++i) {
         // Allouer une page de mémoire alignée sur la taille de page du système
         size_t page_size = sysconf(_SC_PAGESIZE);
-        posix_memalign((void**)&(matrix[j].pages[i]), page_size, page_size);
+        posix_memalign(matrix[j].pages + i, page_size, page_size);
 
         // Remplir la page avec des données dummy (zéros)
          memset(matrix[j].pages[i], 0, page_size);
