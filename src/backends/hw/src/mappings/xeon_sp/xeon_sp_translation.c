@@ -527,7 +527,7 @@ c_write_to_dpus(uint8_t* ptr_dest, xfer_page_table* matrix, uint32_t size_transf
 //modifier la fonction principale au besoin.
 void matrix_creation(xfer_page_table* matrix, uint64_t nb_pages, uint64_t offset) {
 
-  for (int j = 0; j <8; j++ ){
+  for (int j = 0; j <64; j++ ){
     matrix[j].nb_pages = nb_pages;
     matrix[j].off_first_page = offset;
       // Allouer l'espace mémoire pour la structure xfer_page_table
@@ -546,7 +546,7 @@ void matrix_creation(xfer_page_table* matrix, uint64_t nb_pages, uint64_t offset
 }
 
 void free_matrix(xfer_page_table* matrix) {
-   for(int j = 0; j< 8; j++){
+   for(int j = 0; j< 64; j++){
      for (uint64_t i = 0; i < matrix[j].nb_pages; ++i) {
         free(matrix[j].pages[i]);
      }
@@ -569,7 +569,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
  
     size_t page_size = sysconf(_SC_PAGESIZE);
     uint32_t nb_pages = (size_transfer + page_size - 1) / page_size;
-    xfer_page_table *matrix = ( xfer_page_table *) malloc(8 *sizeof(xfer_page_table));
+    xfer_page_table *matrix = ( xfer_page_table *) malloc(64 *sizeof(xfer_page_table));
     matrix->nb_pages = nb_pages;
     matrix->off_first_page = offset;
 
