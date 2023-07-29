@@ -480,6 +480,10 @@ c_write_to_dpus(uint8_t* ptr_dest, xfer_page_table* matrix, uint32_t size_transf
             xferp = matrix + (idx + ci_id);
             if (xferp->nb_pages != 0) {
             printf("STARTED MID CID THING %ld\n", ci_id);
+            printf("CUR_PAGES CI_ID %p\n", cur_pages[ci_id]);
+            printf("OFF IN PAGE %d\n", offset_in_page[ci_id] );
+            printf(" LEN DONE IN PAGE%d\n", len_xfer_done_in_page[ci_id]);
+            printf("HERE IS THE FIRST BYTE IN PAGE %d\n", cur_pages[ci_id][offset_in_page[ci_id]]);
                 
                 cache_line[ci_id] = *(uint64_t*)(cur_pages[ci_id] + 
                ( offset_in_page[ci_id] + len_xfer_done_in_page[ci_id]));
