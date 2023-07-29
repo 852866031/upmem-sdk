@@ -738,7 +738,10 @@ thread_do_mram_xfer(struct xeon_sp_private *xeon_sp_priv, uint8_t thread_id)
     if (xeon_sp_priv->direction == thread_mram_xfer_read)
         threads_read_from_rank(xeon_sp_priv, dpu_id_start, dpu_id_stop);
     else
-        threads_write_to_rank(xeon_sp_priv, dpu_id_start, dpu_id_stop);
+        {
+            threads_write_to_rank2(xeon_sp_priv, dpu_id_start, dpu_id_stop);
+            threads_write_to_rank(xeon_sp_priv, dpu_id_start, dpu_id_stop);
+        }
     
         
 }
