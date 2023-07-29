@@ -532,12 +532,14 @@ void free_matrix(xfer_page_table* matrix) {
 }
 static void
 threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop){
+    printf("Right starting the function\n");
     struct dpu_transfer_matrix *xfer_matrix = xeon_sp_priv->xfer_matrix;
 
     uint8_t idx, dpu_id;
     uint32_t size_transfer = xfer_matrix->size;
     uint32_t offset = xfer_matrix->offset;
     //nb_cis = xeon_sp_priv->tr->interleave->nb_ci;
+    printf("Step 2\n");
  
     size_t page_size = sysconf(_SC_PAGESIZE);
     uint32_t nb_pages = (size_transfer + page_size - 1) / page_size;
