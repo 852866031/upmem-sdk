@@ -628,8 +628,6 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
 
         __builtin_ia32_mfence();
 
-    
-      
     }
 
    
