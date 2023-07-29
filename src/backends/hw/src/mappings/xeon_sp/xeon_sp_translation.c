@@ -431,6 +431,9 @@ channel_id_to_pool_id(int channel_id)
 int
 c_write_to_dpus(uint8_t* ptr_dest, xfer_page_table* matrix, uint32_t size_transfer, uint32_t offset_in_mram, uint8_t idx)
 {
+    struct timespec start, middle, end;
+    double elapsed;
+    clock_gettime(CLOCK_MONOTONIC, &start);
     //printf("started write to dpus \n");
     uint64_t cache_line[NB_REAL_CIS] = {0};
     uint8_t* cur_pages[NB_REAL_CIS] = {NULL};
@@ -517,7 +520,9 @@ c_write_to_dpus(uint8_t* ptr_dest, xfer_page_table* matrix, uint32_t size_transf
         }
     }
     //printf("Done MAIN CONTENT \n");
-
+ clock_gettime(CLOCK_MONOTONIC, &end);
+    elapsed = (end.tv_sec - start.tv_sec)  + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+    printf("Temps d'exécution c_write_func : %.10f sec\n", elapsed);  
         return 0;
 
 }
