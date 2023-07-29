@@ -541,9 +541,11 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
  
     size_t page_size = sysconf(_SC_PAGESIZE);
     uint32_t nb_pages = (size_transfer + page_size - 1) / page_size;
+    printf("Before creating the matrix\n");
     xfer_page_table matrix;
     matrix.nb_pages = nb_pages;
     matrix.off_first_page = offset;
+    printf("Done creating the matrix\n");
 
     if (!size_transfer)
         return;
