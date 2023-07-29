@@ -425,7 +425,7 @@ typedef struct _xfer_pt {
     uint8_t** pages;
 } xfer_page_table;
 
-/* int min(int a,int b){
+ int min(int a,int b){
     return a<b ? a:b;
 }
 int
@@ -528,8 +528,9 @@ void free_matrix(xfer_page_table* matrix) {
     }
     free(matrix->pages);
 }
+
 static void
-threads_write_to_rank2(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop){
+threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop){
     printf("Right starting the function\n");
     struct dpu_transfer_matrix *xfer_matrix = xeon_sp_priv->xfer_matrix;
 
@@ -565,9 +566,9 @@ threads_write_to_rank2(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_star
    
 
     free_matrix(&matrix);
-} */
+}
 
- static void
+/* static void
 threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop)
 {
      
@@ -634,7 +635,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
        printf("Temps d'exécution write to rank rank : %.10f microsecondes\n", elapsed);  
  
 } 
-
+*/
 static void
 threads_read_from_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop)
 {
@@ -736,11 +737,7 @@ thread_do_mram_xfer(struct xeon_sp_private *xeon_sp_priv, uint8_t thread_id)
     if (xeon_sp_priv->direction == thread_mram_xfer_read)
         threads_read_from_rank(xeon_sp_priv, dpu_id_start, dpu_id_stop);
     else
-        {
-            //threads_write_to_rank2(xeon_sp_priv, dpu_id_start, dpu_id_stop);
-            threads_write_to_rank(xeon_sp_priv, dpu_id_start, dpu_id_stop);
-        }
-    
+        threads_write_to_rank(xeon_sp_priv, dpu_id_start, dpu_id_stop);
         
 }
 
