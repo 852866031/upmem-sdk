@@ -472,13 +472,22 @@ c_write_to_dpus(uint8_t* ptr_dest, xfer_page_table* matrix, uint32_t size_transf
         size_t mram_64_bit_word_offset = apply_address_translation_on_mram_offset((len_xfer_done + offset_in_mram)) / 8;
         size_t next_data = mram_64_bit_word_offset * sizeof(uint64_t) * 16;
         size_t offset = (next_data % (BANK_CHUNK_SIZE)) + (next_data / (BANK_CHUNK_SIZE)) * (BANK_NEXT_CHUNK_OFFSET);
+        printf("OFFSET COMPUTED\n");
 
         for (size_t ci_id = 0; ci_id < NB_REAL_CIS; ci_id++) {
+            printf("STARTED CID THING %d\n", ci_id);
+
             xferp = matrix + (idx + ci_id);
             if (xferp->nb_pages != 0) {
+            printf("STARTED MID CID THING %d\n", ci_id);
+                
                 cache_line[ci_id] = *(uint64_t*)(cur_pages[ci_id] + 
                ( offset_in_page[ci_id] + len_xfer_done_in_page[ci_id]));
+            printf("DONE MID CID THING %d\n", ci_id);
+
             }
+            printf("DONE CID THING %d\n", ci_id);
+
         }
         printf("LEN XFER DONE  : %ld \n", len_xfer_done);
 
