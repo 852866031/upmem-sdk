@@ -425,7 +425,7 @@ typedef struct _xfer_pt {
     uint8_t** pages;
 } xfer_page_table;
 
-int min(a,b){
+int min(int a,int b){
     return a<b ? a:b;
 }
 int
