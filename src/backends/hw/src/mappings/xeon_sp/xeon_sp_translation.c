@@ -526,7 +526,7 @@ c_write_to_dpus(uint8_t* ptr_dest, xfer_page_table* matrix, uint32_t size_transf
 //Modifier cette fonction pour créer d'abord un tableau de 64 xferp comme ça, et utiliser ce code ci
 //pour chaque xferp. 
 //modifier la fonction principale au besoin.
-void matrix_creation(xfer_page_table* matrix, int nb_pages, int offset) {
+void matrix_creation(xfer_page_table* matrix, uint64_t nb_pages, uint64_t offset) {
 
   for (int j = 0; j <64; j++ ){
     matrix[j].nb_pages = nb_pages;
@@ -573,7 +573,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
     if (!size_transfer)
         return;
 
-    matrix_creation(matrix);
+    matrix_creation(matrix,nb_pages,offset);
     
     FOREACH_DPU_MULTITHREAD(dpu_id, idx, dpu_id_start, dpu_id_stop){
         uint8_t *ptr_dest = (uint8_t *)xeon_sp_priv->base_region_addr + BANK_START(dpu_id);
