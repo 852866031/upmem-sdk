@@ -482,7 +482,7 @@ c_write_to_dpus(uint8_t* ptr_dest, xfer_page_table* matrix, uint32_t size_transf
             printf("STARTED MID CID THING %ld\n", ci_id);
             printf("CUR_PAGES CI_ID %p\n", cur_pages[ci_id]);
             printf("OFF IN PAGE %d\n", offset_in_page[ci_id] );
-            printf(" LEN DONE IN PAGE%d\n", len_xfer_done_in_page[ci_id]);
+            printf(" LEN DONE IN PAGE %d \n", len_xfer_done_in_page[ci_id]);
             printf("HERE IS THE FIRST BYTE IN PAGE %d\n", cur_pages[ci_id][offset_in_page[ci_id]]);
                 
                 cache_line[ci_id] = *(uint64_t*)(cur_pages[ci_id] + 
@@ -522,27 +522,37 @@ c_write_to_dpus(uint8_t* ptr_dest, xfer_page_table* matrix, uint32_t size_transf
         return 0;
 
 }
-void matrix_creation(xfer_page_table* matrix) {
+//TODO actuellement, la matrice est crée comme un unique xferp. 
+//Modifier cette fonction pour créer d'abord un tableau de 64 xferp comme ça, et utiliser ce code ci
+//pour chaque xferp. 
+//modifier la fonction principale au besoin.
+void matrix_creation(xfer_page_table* matrix, int nb_pages, int offset) {
 
-    // Allouer l'espace mémoire pour la structure xfer_page_table
-    matrix->pages = (uint8_t**)malloc(matrix->nb_pages * sizeof(uint8_t*));
+  for (int j = 0; j <64; j++ ){
+    matrix[j].nb_pages = nb_pages;
+    matrix[j].off_first_page = offset;
+      // Allouer l'espace mémoire pour la structure xfer_page_table
+    matrix[j].pages = (uint8_t**)malloc(nb_pages * sizeof(uint8_t*));
 
     // Allouer et remplir chaque page avec des données dummy (par exemple, des zéros)
-    for (uint64_t i = 0; i < matrix->nb_pages; ++i) {
+    for (uint64_t i = 0; i < nb_pages; ++i) {
         // Allouer une page de mémoire alignée sur la taille de page du système
         size_t page_size = sysconf(_SC_PAGESIZE);
-        posix_memalign((void**)&(matrix->pages[i]), page_size, page_size);
+        posix_memalign((void**)&(matrix[j].pages[i]), page_size, page_size);
 
         // Remplir la page avec des données dummy (zéros)
-         memset(matrix->pages[i], 0, page_size);
+         memset(matrix[j].pages[i], 0, page_size);
     }
+  }
 }
 
 void free_matrix(xfer_page_table* matrix) {
-    for (uint64_t i = 0; i < matrix->nb_pages; ++i) {
-        free(matrix->pages[i]);
-    }
-    free(matrix->pages);
+   for(int j = 0; j< 64; j++){
+     for (uint64_t i = 0; i < matrix[j].nb_pages; ++i) {
+        free(matrix[j].pages[i]);
+     }
+    free(matrix[j].pages);
+   }
 }
 
 static void
@@ -556,7 +566,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
  
     size_t page_size = sysconf(_SC_PAGESIZE);
     uint32_t nb_pages = (size_transfer + page_size - 1) / page_size;
-    xfer_page_table *matrix = ( xfer_page_table *) malloc(sizeof(xfer_page_table));
+    xfer_page_table *matrix = ( xfer_page_table *) malloc(64 *sizeof(xfer_page_table));
     matrix->nb_pages = nb_pages;
     matrix->off_first_page = offset;
 
