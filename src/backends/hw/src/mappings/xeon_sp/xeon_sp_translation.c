@@ -480,7 +480,7 @@ c_write_to_dpus(uint8_t* ptr_dest, xfer_page_table* matrix, uint32_t size_transf
                ( offset_in_page[ci_id] + len_xfer_done_in_page[ci_id]));
             }
         }
-        printf("LEN XFER DONE  : %d \n", len_xfer_done);
+        printf("LEN XFER DONE  : %ld \n", len_xfer_done);
 
         byte_interleave_avx512((uint64_t*)cache_line, (uint64_t*)(ptr_dest + offset), true);
 
