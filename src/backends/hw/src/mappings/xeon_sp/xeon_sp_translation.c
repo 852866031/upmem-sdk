@@ -507,6 +507,8 @@ c_write_to_dpus(uint8_t* ptr_dest, xfer_page_table* matrix, uint32_t size_transf
 
 }
 void matrix_creation(xfer_page_table* matrix) {
+    printf("Started there in matrix creation \n");
+
     // Allouer l'espace mémoire pour la structure xfer_page_table
     matrix->pages = (uint8_t**)malloc(matrix->nb_pages * sizeof(uint8_t*));
 
@@ -519,6 +521,7 @@ void matrix_creation(xfer_page_table* matrix) {
         // Remplir la page avec des données dummy (zéros)
          memset(matrix->pages[i], 0, page_size);
     }
+    printf("Done there in matrix creation \n");
 }
 
 void free_matrix(xfer_page_table* matrix) {
