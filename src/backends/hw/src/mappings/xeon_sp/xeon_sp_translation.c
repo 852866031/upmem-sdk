@@ -419,7 +419,7 @@ channel_id_to_pool_id(int channel_id)
     return syscall(__NR_perf_event_open, hw_event, pid, cpu, group_fd, flags);
 } */
 
-/* typedef struct _xfer_pt {
+ typedef struct _xfer_pt {
     uint64_t nb_pages;
     uint32_t off_first_page;
     uint8_t** pages;
@@ -599,8 +599,8 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
     free_matrix(matrix);
     free(matrix);
 }
- */
- static void
+
+ /* static void
 threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop)
 {
      
@@ -667,7 +667,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
        printf("Temps d'exécution write to rank rank : %.10f sec\n", elapsed);  
  
 } 
-
+ */
 static void
 threads_read_from_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start, uint8_t dpu_id_stop)
 {
