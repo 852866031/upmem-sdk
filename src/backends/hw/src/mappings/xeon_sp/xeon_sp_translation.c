@@ -431,7 +431,7 @@ channel_id_to_pool_id(int channel_id)
 int
 c_write_to_dpus(uint8_t* ptr_dest, xfer_page_table* matrix, uint32_t size_transfer, uint32_t offset_in_mram, uint8_t idx)
 {
-    struct timespec start, middle, end;
+    struct timespec start,  end;
     double elapsed;
     clock_gettime(CLOCK_MONOTONIC, &start);
     //printf("started write to dpus \n");
