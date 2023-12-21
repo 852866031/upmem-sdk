@@ -669,7 +669,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
     }
     clock_gettime(CLOCK_MONOTONIC, &end);
     elapsed = (end.tv_sec - start.tv_sec)  + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-    printf("Temps d'exécution write to rank rank : %.10f sec\n", elapsed);  
+    printf("Time for thread_write_to_rank : %.10f sec\n", elapsed);  
 } 
 
 static void
@@ -856,6 +856,8 @@ xeon_sp_init_and_do_xfer(struct xeon_sp_private *pool,
     enum thread_mram_xfer direction)
 {
     /* Init transfer */
+    struct timespec start, end;
+    double elapsed;
     pool->tr = tr;
     pool->direction = direction;
     pool->xfer_matrix = xfer_matrix;
@@ -874,9 +876,13 @@ xeon_sp_init_and_do_xfer(struct xeon_sp_private *pool,
         pool->nb_threads_for_xfer = conf->nb_thread_per_pool;
     }
     /* Do transfer */
+    clock_gettime(CLOCK_MONOTONIC, &start);    
     pthread_barrier_wait(&pool->barrier_threads);
     /* Wait for every threads to complete their job */
     pthread_barrier_wait(&pool->barrier_threads);
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    elapsed = (end.tv_sec - start.tv_sec)  + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+    printf("Time for whole xfer: %.10f sec\n", elapsed);  
 }
 
 void
