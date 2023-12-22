@@ -806,6 +806,10 @@ thread_mram(void *arg)
     bool *stop_thread = &((struct thread_mram_args *)arg)->stop_thread;
     bool numa_affinity_is_set = false;
 
+
+    pthread_t thread_id = pthread_self();
+    printf("Thread ID: %lu\n", (unsigned long)thread_id);
+    
     while (true) {
         // Wait for a job to perform
         pthread_barrier_wait(&xeon_sp_priv->barrier_threads);
@@ -892,10 +896,10 @@ xeon_sp_write_to_rank(struct dpu_region_address_translation *tr,
     struct dpu_transfer_matrix *xfer_matrix)
 {
     uint8_t pool_id = xeon_sp_acquire_pool(channel_id);
-    printf("Start write to rank\n", elapsed);  
+    printf("Start write to rank\n");  
     xeon_sp_init_and_do_xfer(&xeon_sp_ctx.pool[pool_id], tr, base_region_addr, xfer_matrix, thread_mram_xfer_write);
     xeon_sp_release_pool(channel_id);
-    printf("End write to rank\n", elapsed);  
+    printf("End write to rank\n");  
 }
 
 void
@@ -905,10 +909,10 @@ xeon_sp_read_from_rank(struct dpu_region_address_translation *tr,
     struct dpu_transfer_matrix *xfer_matrix)
 {
     uint8_t pool_id = xeon_sp_acquire_pool(channel_id);
-    printf("Start read from rank\n", elapsed);  
+    printf("Start read from rank\n");  
     xeon_sp_init_and_do_xfer(&xeon_sp_ctx.pool[pool_id], tr, base_region_addr, xfer_matrix, thread_mram_xfer_read);
     xeon_sp_release_pool(channel_id);
-    printf("End read from rank\n", elapsed);  
+    printf("End read from rank\n");  
 }
 
 static const struct dpu_transfer_thread_configuration *
