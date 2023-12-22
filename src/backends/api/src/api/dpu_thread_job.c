@@ -367,7 +367,7 @@ dpu_thread_job_fct(void *arg)
             bool keep_job_list;
 
             dpu_error_t status = dpu_thread_compute_job(rank, job, &keep_job_list);
-            printf("<API job handleing thread pool> job type %d finished on rank %d\n", job->type, rank->rank_id);
+            if(job->type!=2) printf("<API job handleing thread pool> job type %d finished on rank %d\n", job->type, rank->rank_id);
             if (!keep_job_list) {
                 goto main_loop;
             }
