@@ -378,6 +378,7 @@ dpu_thread_job_fct(void *arg)
             job = dpu_thread_advance_to_next_job(rank);
         }
         dpu_unlock_rank(rank);
+        printf("<API job handleing thread pool> job type %d finished on rank %d\n", job->type, rank->rank_id);
     }
     return NULL;
 }
