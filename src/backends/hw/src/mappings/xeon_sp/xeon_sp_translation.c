@@ -624,7 +624,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
         return;
     //clock_gettime(CLOCK_MONOTONIC, &start2);
 
-    clock_gettime(CLOCK_MONOTONIC, &start);
+    //clock_gettime(CLOCK_MONOTONIC, &start);
     FOREACH_DPU_MULTITHREAD(dpu_id, idx, dpu_id_start, dpu_id_stop)
     {
     //clock_gettime(CLOCK_MONOTONIC, &start3);
@@ -662,8 +662,8 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
         __builtin_ia32_mfence();
 
     }
-    clock_gettime(CLOCK_MONOTONIC, &end);
-    elapsed = (end.tv_sec - start.tv_sec)  + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+    //clock_gettime(CLOCK_MONOTONIC, &end);
+    //elapsed = (end.tv_sec - start.tv_sec)  + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
     //printf("<HW execution thread pool> Time for thread_write_to_rank : %.10f sec on thread %lu\n", elapsed, (unsigned long)pthread_self());  
 } 
 
