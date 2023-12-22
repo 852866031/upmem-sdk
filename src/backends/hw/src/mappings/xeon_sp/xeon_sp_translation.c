@@ -807,8 +807,8 @@ thread_mram(void *arg)
     bool numa_affinity_is_set = false;
 
 
-    pthread_t thread_id = pthread_self();
-    printf("Thread ID: %lu\n", (unsigned long)thread_id);
+    pthread_t id = pthread_self();
+    printf("Thread ID: %lu\n", (unsigned long)id);
     
     while (true) {
         // Wait for a job to perform
