@@ -668,7 +668,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
     }
     clock_gettime(CLOCK_MONOTONIC, &end);
     elapsed = (end.tv_sec - start.tv_sec)  + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-    printf("Time for thread_write_to_rank : %.10f sec\n", elapsed);  
+    printf("Time for thread_write_to_rank : %.10f sec on thread %lu\n", elapsed, (unsigned long)pthread_self());  
 } 
 
 static void
