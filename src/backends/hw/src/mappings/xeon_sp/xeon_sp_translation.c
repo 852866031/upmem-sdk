@@ -608,9 +608,9 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
 {
      
 
-    struct timespec start, end;
+    //struct timespec start, end;
 
-    double elapsed;
+    //double elapsed;
 
     struct dpu_transfer_matrix *xfer_matrix = xeon_sp_priv->xfer_matrix;
     uint64_t cache_line[NB_REAL_CIS];
