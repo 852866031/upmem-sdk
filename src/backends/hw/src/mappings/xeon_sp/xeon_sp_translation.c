@@ -848,8 +848,8 @@ xeon_sp_init_and_do_xfer(struct xeon_sp_private *pool,
     enum thread_mram_xfer direction)
 {
     /* Init transfer */
-    //struct timespec start, end;
-    //double elapsed;
+    struct timespec start, end;
+    double elapsed;
     pool->tr = tr;
     pool->direction = direction;
     pool->xfer_matrix = xfer_matrix;
@@ -868,13 +868,13 @@ xeon_sp_init_and_do_xfer(struct xeon_sp_private *pool,
         pool->nb_threads_for_xfer = conf->nb_thread_per_pool;
     }
     /* Do transfer */
-    //clock_gettime(CLOCK_MONOTONIC, &start);    
+    clock_gettime(CLOCK_MONOTONIC, &start);    
     pthread_barrier_wait(&pool->barrier_threads);
     /* Wait for every threads to complete their job */
     pthread_barrier_wait(&pool->barrier_threads);
-    //clock_gettime(CLOCK_MONOTONIC, &end);
-    //elapsed = (end.tv_sec - start.tv_sec)  + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-    //printf("<HW execution thread pool> Time for whole xfer: %.10f sec\n", elapsed);  
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    elapsed = (end.tv_sec - start.tv_sec)  + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+    printf("<HW execution thread pool> Time for whole xfer: %.10f sec\n", elapsed);  
 }
 
 void
@@ -884,10 +884,10 @@ xeon_sp_write_to_rank(struct dpu_region_address_translation *tr,
     struct dpu_transfer_matrix *xfer_matrix)
 {
     uint8_t pool_id = xeon_sp_acquire_pool(channel_id);
-    //printf("<HW execution thread pool> Start write to rank\n");  
+    printf("<HW execution thread pool> Start write to rank\n");  
     xeon_sp_init_and_do_xfer(&xeon_sp_ctx.pool[pool_id], tr, base_region_addr, xfer_matrix, thread_mram_xfer_write);
     xeon_sp_release_pool(channel_id);
-    //printf("<HW execution thread pool> End write to rank\n");  
+    printf("<HW execution thread pool> End write to rank\n");  
 }
 
 void
