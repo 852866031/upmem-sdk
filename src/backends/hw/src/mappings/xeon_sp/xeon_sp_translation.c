@@ -608,9 +608,9 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
 {
      
 
-    struct timespec start, end;
+    //struct timespec start, end;
 
-    double elapsed;
+    //double elapsed;
 
     struct dpu_transfer_matrix *xfer_matrix = xeon_sp_priv->xfer_matrix;
     uint64_t cache_line[NB_REAL_CIS];
@@ -623,7 +623,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
     if (!size_transfer)
         return;
 
-    clock_gettime(CLOCK_MONOTONIC, &start);
+    //clock_gettime(CLOCK_MONOTONIC, &start);
     FOREACH_DPU_MULTITHREAD(dpu_id, idx, dpu_id_start, dpu_id_stop)
     {
 
@@ -659,9 +659,9 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
         __builtin_ia32_mfence();
 
     }
-    clock_gettime(CLOCK_MONOTONIC, &end);
-    elapsed = (end.tv_sec - start.tv_sec)  + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-    printf("<HW execution thread pool> Time for thread_write_to_rank : %.10f sec on thread %lu\n", elapsed, (unsigned long)pthread_self()); 
+    //clock_gettime(CLOCK_MONOTONIC, &end);
+    //elapsed = (end.tv_sec - start.tv_sec)  + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+    //printf("<HW execution thread pool> Time for thread_write_to_rank : %.10f sec on thread %lu\n", elapsed, (unsigned long)pthread_self()); 
 } 
 
 static void
@@ -848,8 +848,8 @@ xeon_sp_init_and_do_xfer(struct xeon_sp_private *pool,
     enum thread_mram_xfer direction)
 {
     /* Init transfer */
-    struct timespec start, end;
-    double elapsed;
+    //struct timespec start, end;
+    //double elapsed;
     pool->tr = tr;
     pool->direction = direction;
     pool->xfer_matrix = xfer_matrix;
@@ -868,13 +868,13 @@ xeon_sp_init_and_do_xfer(struct xeon_sp_private *pool,
         pool->nb_threads_for_xfer = conf->nb_thread_per_pool;
     }
     /* Do transfer */
-    clock_gettime(CLOCK_MONOTONIC, &start);    
+    //clock_gettime(CLOCK_MONOTONIC, &start);    
     pthread_barrier_wait(&pool->barrier_threads);
     /* Wait for every threads to complete their job */
     pthread_barrier_wait(&pool->barrier_threads);
-    clock_gettime(CLOCK_MONOTONIC, &end);
-    elapsed = (end.tv_sec - start.tv_sec)  + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-    printf("<HW execution thread pool> Time for whole xfer: %.10f sec\n", elapsed);  
+    //clock_gettime(CLOCK_MONOTONIC, &end);
+    //elapsed = (end.tv_sec - start.tv_sec)  + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+    //printf("<HW execution thread pool> Time for whole xfer: %.10f sec\n", elapsed);  
 }
 
 void
