@@ -668,7 +668,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
     }
     clock_gettime(CLOCK_MONOTONIC, &end);
     elapsed = (end.tv_sec - start.tv_sec)  + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-    printf("Time for thread_write_to_rank : %.10f sec on thread %lu\n", elapsed, (unsigned long)pthread_self());  
+    printf("<HW execution thread pool> Time for thread_write_to_rank : %.10f sec on thread %lu\n", elapsed, (unsigned long)pthread_self());  
 } 
 
 static void
@@ -881,7 +881,7 @@ xeon_sp_init_and_do_xfer(struct xeon_sp_private *pool,
     pthread_barrier_wait(&pool->barrier_threads);
     clock_gettime(CLOCK_MONOTONIC, &end);
     elapsed = (end.tv_sec - start.tv_sec)  + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-    printf("Time for whole xfer: %.10f sec\n", elapsed);  
+    printf("<HW execution thread pool> Time for whole xfer: %.10f sec\n", elapsed);  
 }
 
 void
@@ -891,10 +891,10 @@ xeon_sp_write_to_rank(struct dpu_region_address_translation *tr,
     struct dpu_transfer_matrix *xfer_matrix)
 {
     uint8_t pool_id = xeon_sp_acquire_pool(channel_id);
-    printf("Start write to rank\n");  
+    printf("<HW execution thread pool> Start write to rank\n");  
     xeon_sp_init_and_do_xfer(&xeon_sp_ctx.pool[pool_id], tr, base_region_addr, xfer_matrix, thread_mram_xfer_write);
     xeon_sp_release_pool(channel_id);
-    printf("End write to rank\n");  
+    printf("<HW execution thread pool> End write to rank\n");  
 }
 
 void
@@ -904,10 +904,10 @@ xeon_sp_read_from_rank(struct dpu_region_address_translation *tr,
     struct dpu_transfer_matrix *xfer_matrix)
 {
     uint8_t pool_id = xeon_sp_acquire_pool(channel_id);
-    printf("Start read from rank\n");  
+    printf("<HW execution thread pool> Start read from rank\n");  
     xeon_sp_init_and_do_xfer(&xeon_sp_ctx.pool[pool_id], tr, base_region_addr, xfer_matrix, thread_mram_xfer_read);
     xeon_sp_release_pool(channel_id);
-    printf("End read from rank\n");  
+    printf("<HW execution thread pool> End read from rank\n");  
 }
 
 static const struct dpu_transfer_thread_configuration *
