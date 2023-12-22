@@ -615,8 +615,7 @@ threads_write_to_rank(struct xeon_sp_private *xeon_sp_priv, uint8_t dpu_id_start
     struct timespec start, end;
 
     double elapsed;
-    
-    printf("THIS IS A THREAD WRITE \n"); 
+
     struct dpu_transfer_matrix *xfer_matrix = xeon_sp_priv->xfer_matrix;
     uint64_t cache_line[NB_REAL_CIS];
     uint8_t idx, ci_id, dpu_id, nb_cis;
@@ -805,10 +804,6 @@ thread_mram(void *arg)
     uint8_t thread_id = ((struct thread_mram_args *)arg)->thread_id;
     bool *stop_thread = &((struct thread_mram_args *)arg)->stop_thread;
     bool numa_affinity_is_set = false;
-
-
-    pthread_t id = pthread_self();
-    printf("Thread ID: %lu\n", (unsigned long)id);
     
     while (true) {
         // Wait for a job to perform
