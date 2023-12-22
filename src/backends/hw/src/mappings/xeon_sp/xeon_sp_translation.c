@@ -884,10 +884,10 @@ xeon_sp_write_to_rank(struct dpu_region_address_translation *tr,
     struct dpu_transfer_matrix *xfer_matrix)
 {
     uint8_t pool_id = xeon_sp_acquire_pool(channel_id);
-    printf("<HW execution thread pool> Start write to rank\n");  
+    //printf("<HW execution thread pool> Start write to rank\n");  
     xeon_sp_init_and_do_xfer(&xeon_sp_ctx.pool[pool_id], tr, base_region_addr, xfer_matrix, thread_mram_xfer_write);
     xeon_sp_release_pool(channel_id);
-    printf("<HW execution thread pool> End write to rank\n");  
+    //printf("<HW execution thread pool> End write to rank\n");  
 }
 
 void
